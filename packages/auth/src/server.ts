@@ -1,6 +1,12 @@
 import { betterAuth } from "better-auth";
+import { toNextJsHandler, nextCookies } from "better-auth/next-js";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import dotenv from "dotenv";
 import { db } from "@pouch/db";
+
+dotenv.config({
+  path: "../../../.env"
+});
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -8,7 +14,8 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true
-  }
+  },
+  trustedOrigins: ["http://localhost:3000"]
   // socialProviders: {
   //   google: {
   //     clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -20,3 +27,5 @@ export const auth = betterAuth({
   //   }
   // }
 });
+
+export const authHandler = toNextJsHandler(auth.handler);

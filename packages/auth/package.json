@@ -11,8 +11,9 @@
     "./client": "./src/client.ts"
   },
   "dependencies": {
+    "@pouch/db": "workspace:*",
     "better-auth": "^1.3.17",
-    "@pouch/db": "workspace:*"
+    "dotenv": "^17.2.2"
   },
   "devDependencies": {
     "typescript": "latest"
