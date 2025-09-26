@@ -4,8 +4,10 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* color: rgba(255, 255, 255, 0.87); */
+  /* background-color: #242424; */
+  /* background-color: transparent; */
+  /* border-radius: 4px; */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -14,7 +16,24 @@
   -webkit-text-size-adjust: 100%;
 }
 
-a {
+/* body { */
+/* overflow: hidden; */
+/* background-color: transparent; */
+/* } */
+
+/* @media (prefers-color-scheme: light) {
+  body {
+    background-color: #ffffff;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #020618;
+  }
+} */
+
+/* a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
@@ -66,4 +85,4 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
+} */

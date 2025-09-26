@@ -5,6 +5,7 @@ import {
   createHashHistory,
   createRouter
 } from "@tanstack/react-router";
+import "@pouch/ui/globals.css";
 import "./style.css";
 
 // Import the generated route tree
