@@ -15,11 +15,12 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
-    "@pouch/ui": "workspace:*",
     "@pouch/auth": "workspace:*",
     "@pouch/db": "workspace:*",
+    "@pouch/ui": "workspace:*",
     "@tailwindcss/vite": "^4.1.13",
     "@tanstack/react-router": "^1.132.6",
+    "axios": "^1.12.2",
     "lucide-react": "^0.475.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

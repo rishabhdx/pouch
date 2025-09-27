@@ -31,6 +31,7 @@ export default defineConfig({
       "tabs",
       "scripting"
     ],
+    host_permissions: ["<all_urls>"],
     // Required for webext-permission-toggle
     action: {}
     // webExt: {

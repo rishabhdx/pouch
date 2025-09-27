@@ -1,6 +1,7 @@
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
+import morgan from "morgan";
 import { expressHandler } from "@pouch/auth/server";
 
 import { rootRouter } from "./routes";
@@ -16,6 +17,18 @@ app.use(
     exposedHeaders: ["set-cookie"]
   })
 );
+app.use(morgan(":method :url :status :req[header] - :response-time ms"));
+// app.use(morgan("dev"));
+// morgan(function (tokens, req, res) {
+//   return [
+//     tokens.method ? tokens.method(req, res) : "-",
+//     tokens.url ? tokens.url(req, res) : "-",
+//     tokens.status ? tokens.status(req, res) : "-",
+//     tokens.res ? tokens.res(req, res, "content-length") : "-",
+//     tokens["response-time"] ? tokens["response-time"](req, res) : "-",
+//     "ms",
+//   ].join(" ");
+// });
 
 app.all("/api/auth/{*any}", expressHandler);
 

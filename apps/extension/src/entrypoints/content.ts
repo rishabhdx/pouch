@@ -101,11 +101,12 @@ export default defineContentScript({
           console.log("Meta twitter:description", meta.twitterDescription);
           console.log("Meta twitter:image", meta.twitterImage);
           console.log("Meta twitter:card", meta.twitterCard);
+          return;
 
-          browser.runtime.sendMessage({
-            type: "DONE_FROM_CONTENT",
-            meta
-          });
+          // browser.runtime.sendMessage({
+          //   type: "DONE_FROM_CONTENT",
+          //   meta
+          // });
         }
 
         if (props.type === ACTIONS.INITIATE_SIGNIN_FROM_WELCOME) {
@@ -114,6 +115,15 @@ export default defineContentScript({
           browser.runtime.sendMessage({
             type: ACTIONS.INITIATE_SIGNIN_FROM_WELCOME
           });
+        }
+
+        if (props.type === ACTIONS.SAVE_BOOKMARK) {
+          console.log("Saving bookmark from content script with props:", props);
+          browser.runtime.sendMessage({
+            ...props
+          });
+
+          return;
         }
       }
     );

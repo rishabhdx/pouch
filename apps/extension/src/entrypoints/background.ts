@@ -1,20 +1,19 @@
 import { ACTIONS } from "@/constants";
+import { saveBookmark } from "@/utils/api";
 import { authClient } from "@pouch/auth/client";
 
 export default defineBackground(() => {
   console.log("Hello background.", { id: browser.runtime.id });
 
-  browser.tabs.onUpdated.addListener(async (rest, changeInfo) => {
-    const sessionKey = await browser.storage.local.get("session");
-    console.log("Current session key in storage:", sessionKey);
-    // console.log(browser.identity.getRedirectURL());
-    // console.log("Tab updated:", changeInfo);
-    // console.log("Rest info:", rest);
+  browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    if (changeInfo.status === "complete" && tab.url) {
+      console.log("Tab fully loaded:", tab.url);
 
-    if (changeInfo.url?.startsWith(browser.identity.getRedirectURL())) {
-      console.log("Redirect URL:", browser.identity.getRedirectURL());
-      // finishUserOAuth(changeInfo.url);
-      console.log("OAuth redirect detected:", changeInfo.url);
+      if (tab.url.startsWith(import.meta.env.WXT_WEBSITE_URL)) {
+        console.log("Redirect URL detected:", import.meta.env.WXT_WEBSITE_URL);
+
+        await checkAuthSession("Checking auth session on tab update...");
+      }
     }
   });
 
@@ -25,17 +24,33 @@ export default defineBackground(() => {
       await browser.tabs.create({
         url: `${import.meta.env.WXT_WEBSITE_URL}/auth/sign-in`
       });
+      return;
+    }
+
+    if (props.type === ACTIONS.SAVE_BOOKMARK) {
+      console.log("Saving bookmark with props:", props);
+      try {
+        await saveBookmark({
+          title: props.title,
+          url: props.url,
+          collection: props.collection,
+          tags: props.tags
+        });
+      } catch (error) {
+        console.error("saving bookmark failed again:", error);
+      }
+      return;
     }
   });
 
-  browser.runtime.onStartup.addListener(async () => {
-    console.log("onStartup background script started.");
-    checkAuthSession("Checking auth session on startup...");
-  });
+  // browser.runtime.onStartup.addListener(async () => {
+  //   console.log("onStartup background script started.");
+  //   checkAuthSession("Checking auth session on startup...");
+  // });
 
   browser.runtime.onInstalled.addListener(async () => {
     console.log("onInstalled background script installed.");
-    checkAuthSession("Checking auth session on install...");
+    await checkAuthSession("Checking auth session on install...");
 
     // const session = await authClient.getSession();
 
@@ -51,16 +66,24 @@ export default defineBackground(() => {
 
   const checkAuthSession = async (msg: string) => {
     console.log(msg);
-    const session = await authClient.getSession();
+    try {
+      const { data } = await authClient.getSession({
+        fetchOptions: { throw: false }
+      });
 
-    if (!session || !session.data) {
+      if (!data || !data.session) {
+        await browser.storage.local.remove("session");
+        console.log("No valid session found. Cleared local session storage.");
+        return;
+      }
+
+      await browser.storage.local.set({ session: data.session });
+      console.log("Session data stored in local storage:", data.session);
+    } catch (error) {
+      console.error("Error checking auth session:", error);
       await browser.storage.local.remove("session");
-      console.log("No valid session found. Cleared local session storage.");
-      return;
+      return null;
     }
-
-    await browser.storage.local.set({ session: session.data });
-    console.log("Session data stored in local storage:", session.data);
 
     // const sessionKey = await browser.storage.local.get("session");
 

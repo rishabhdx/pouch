@@ -1,22 +1,20 @@
 import { browser } from "wxt/browser";
 import { ACTIONS } from "@/constants";
 import { Button } from "@pouch/ui/components/button";
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { authClient } from "@pouch/auth/client";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/welcome")({
-  component: RouteComponent,
-  beforeLoad: async () => {
-    const session = await authClient.getSession();
-    if (session && session.data) {
-      throw redirect({
-        to: "/"
-      });
-    }
-  }
+  component: RouteComponent
 });
 
 function RouteComponent() {
+  // const { data, isLoading, isError } = useQuery({
+  //   queryKey: ["posts", 1],
+  //   queryFn: () => fetchPosts(1)
+  // });
+
+  // console.log("Posts data:", { data, isLoading, isError });
+
   const handleSignInClick = async () => {
     const [tab] = await browser.tabs.query({
       active: true,

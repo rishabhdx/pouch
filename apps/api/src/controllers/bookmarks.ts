@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 
-export const createBookmark = (_: Request, res: Response) => {
-  res.send("Create a bookmark");
+export const createBookmark = (req: Request, res: Response) => {
+  console.log("Request Body:", JSON.stringify(req.body, null, 2));
+
+  res.status(201).json({ message: "Bookmark created successfully" });
 };

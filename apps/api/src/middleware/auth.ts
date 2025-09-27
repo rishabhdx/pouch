@@ -19,6 +19,8 @@ export const authenticatedUser = async (
       headers: fromNodeHeaders(req.headers)
     });
 
+    console.log("Session:", session);
+
     if (!session) {
       return res.status(401).json({ message: "No active session" });
     }

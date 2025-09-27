@@ -23,13 +23,17 @@ declare module "@tanstack/react-router" {
   }
 }
 
+// const queryClient = new QueryClient();
+
 // Render the app
 const rootElement = document.getElementById("root")!;
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>
+      {/* <QueryClientProvider client={queryClient}> */}
       <RouterProvider router={router} />
+      {/* </QueryClientProvider> */}
     </React.StrictMode>
   );
 }

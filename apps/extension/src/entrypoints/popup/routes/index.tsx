@@ -45,16 +45,38 @@ function Index() {
 
     setTitle(tab.title ?? "");
 
-    browser.tabs.sendMessage(tab.id, {
+    await browser.tabs.sendMessage(tab.id, {
       type: ACTIONS.EXTRACT_METADATA,
       title: tab.title,
       url: tab.url
     });
   };
 
+  const handleSaveBookmark = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const [tab] = await browser.tabs.query({
+      active: true,
+      currentWindow: true
+    });
+
+    if (!tab.id) return;
+
+    await browser.runtime.sendMessage({
+      type: ACTIONS.SAVE_BOOKMARK,
+      title: title,
+      url: tab.url,
+      collection: collection,
+      tags: tags
+    });
+  };
+
   return (
     <div className="w-sm h-full bg-background text-foreground border border-border rounded-md p-4">
-      <form className="bg-card flex flex-col space-y-4">
+      <form
+        className="bg-card flex flex-col space-y-4"
+        onSubmit={handleSaveBookmark}
+      >
         <Textarea
           placeholder="Type here..."
           className="w-full bg-secondary text-sm resize-none"
@@ -142,7 +164,7 @@ function Index() {
           </Link>
         </div>
 
-        <Button>Save tab</Button>
+        <Button type="submit">Save tab</Button>
       </form>
     </div>
   );
