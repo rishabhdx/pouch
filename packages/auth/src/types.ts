@@ -1,1 +1,24 @@
 export type { Account, User, Session, Verification } from "better-auth/types";
+
+// {
+//   "name": "@pouch/auth",
+//   "type": "module",
+//   "version": "0.1.0",
+//   "scripts": {
+//     "dev": "tsc --watch",
+//     "build": "tsc"
+//   },
+//   "exports": {
+//     "./server": "./src/server.ts",
+//     "./client": "./src/client.ts",
+//     "./types": "./src/types.ts"
+//   },
+//   "dependencies": {
+//     "@pouch/db": "workspace:*",
+//     "better-auth": "^1.3.17",
+//     "dotenv": "^17.2.2"
+//   },
+//   "devDependencies": {
+//     "typescript": "latest"
+//   }
+// }

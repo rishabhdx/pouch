@@ -1,83 +1,16 @@
 {
-  "extends": ["@tsconfig/node-ts/tsconfig.json"],
+  "extends": "@pouch/typescript-config/base.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["ESNext"],
-    "module": "preserve",
-    // "baseUrl": "./src",
-    // "paths": {
-    //   "@/*": ["*"]
-    // },
-    "moduleResolution": "bundler",
+    "rootDir": "src",
     "outDir": "dist",
-    // "importsNotUsedAsValues": "remove",
-    "strict": true,
-    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "es2022",
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "strict": true,
+    "declaration": false,
+    "declarationMap": false
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
-
-// {
-//   "compilerOptions": {
-//     "target": "es2022",
-//     "strict": true,
-//     "esModuleInterop": true,
-//     "skipLibCheck": true,
-//     "module": "node16",
-//     "moduleResolution": "node16",
-//     "outDir": "dist",
-//     "baseUrl": ".",
-//     "allowJs": true
-//   },
-//   "include": ["src"],
-//   "exclude": ["node_modules", "dist"]
-// }
-
-// {
-//   "extends": "@pouch/typescript-config/db.json",
-//   "compilerOptions": {
-//     "rootDir": "src",
-//     "outDir": "dist"
-//   },
-//   "include": ["src"],
-//   "exclude": ["node_modules", "dist"]
-// }
-
-// {
-//   "compilerOptions": {
-//     "target": "es2015",
-//     // "module": "node16",
-//     // "moduleResolution": "node16",
-//     "module": "es2015",
-//     "moduleResolution": "bundler",
-//     // "module": "nodenext",
-//     // "moduleResolution": "nodenext",
-//     "lib": ["ES2015"],
-
-//     "esModuleInterop": true,
-//     "resolveJsonModule": true,
-//     "strict": true,
-//     "skipDefaultLibCheck": true,
-//     "skipLibCheck": true,
-
-//     "rootDir": "src",
-//     "outDir": "dist",
-
-//     "allowSyntheticDefaultImports": true,
-//     "importHelpers": true,
-//     "alwaysStrict": true,
-//     "sourceMap": true,
-//     "forceConsistentCasingInFileNames": true,
-//     "noFallthroughCasesInSwitch": true,
-//     "noUnusedLocals": true,
-//     "noUnusedParameters": true,
-//     "noImplicitAny": false,
-//     "noImplicitThis": false,
-//     "strictNullChecks": false
-//   },
-//   "include": ["src"],
-//   "exclude": ["node_modules", "dist"]
-// }

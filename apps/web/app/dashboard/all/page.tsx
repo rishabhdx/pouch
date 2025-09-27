@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { BookmarksView } from "@/components/bookmarks/main-view";
 import { demoBookmarks } from "@/constants/sample-data";
 import { Suspense } from "react";
+import { db } from "@pouch/db";
+import { bookmarks } from "@pouch/db/schema";
 
 export default async function AllLinksPage() {
   const session = await auth.api.getSession({
@@ -15,7 +17,9 @@ export default async function AllLinksPage() {
     redirect("/");
   }
 
-  await new Promise(resolve => setTimeout(resolve, 5000));
+  const allBookmarks = await db.select().from(bookmarks);
+
+  console.log("ALL BOOKMARKS", allBookmarks);
 
   return (
     <div className="h-full w-full py-4 px-4 lg:px-6">

@@ -3,13 +3,22 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
-    "dev": "tsc -b --watch",
-    "build": "tsc -b"
+    "build": "tsc",
+    "dev": "tsc --watch"
   },
   "exports": {
-    "./server": "./src/server.ts",
-    "./client": "./src/client.ts",
-    "./types": "./src/types.ts"
+    "./server": {
+      "default": "./dist/server.js",
+      "types": "./dist/server.d.ts"
+    },
+    "./client": {
+      "default": "./dist/client.js",
+      "types": "./dist/client.d.ts"
+    },
+    "./types": {
+      "default": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    }
   },
   "dependencies": {
     "@pouch/db": "workspace:*",
