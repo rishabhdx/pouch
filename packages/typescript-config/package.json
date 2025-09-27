@@ -5,5 +5,8 @@
   "license": "PROPRIETARY",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@tsconfig/node20": "^20.1.6"
   }
 }

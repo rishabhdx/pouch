@@ -1,8 +1,12 @@
 import { betterAuth } from "better-auth";
-import { toNextJsHandler, nextCookies } from "better-auth/next-js";
+import { toNextJsHandler } from "better-auth/next-js";
+import { toNodeHandler } from "better-auth/node";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import dotenv from "dotenv";
 import { db } from "@pouch/db";
+
+export { fromNodeHeaders } from "better-auth/node";
+export { nextCookies } from "better-auth/next-js";
 
 dotenv.config({
   path: "../../../.env"
@@ -34,3 +38,4 @@ export const auth = betterAuth({
 });
 
 export const authHandler = toNextJsHandler(auth.handler);
+export const expressHandler = toNodeHandler(auth);

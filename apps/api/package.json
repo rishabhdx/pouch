@@ -1,0 +1,33 @@
+{
+  "name": "@pouch/api",
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsdown",
+    "start": "node ./dist/index.js"
+  },
+  "dependencies": {
+    "@pouch/auth": "workspace:*",
+    "@pouch/db": "workspace:*",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1",
+    "ts-node-dev": "^2.0.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node-ts": "^23.6.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^20.19.9",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "tsdown": "^0.15.4",
+    "tslib": "^2.8.1",
+    "tsx": "^4.20.5",
+    "typescript": "latest"
+  }
+}
