@@ -2,6 +2,7 @@
 
 import { startTransition } from "react";
 import { useRouter } from "next/navigation";
+import _ from "lodash";
 
 import { Avatar, AvatarFallback } from "@pouch/ui/components/avatar";
 import {
@@ -10,7 +11,13 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger
 } from "@pouch/ui/components/dropdown-menu";
 import { SidebarMenuButton, useSidebar } from "@pouch/ui/components/sidebar";
@@ -20,10 +27,12 @@ import {
   BadgeCheck,
   ChevronsUpDown,
   LogOut,
+  Palette,
   Settings,
   Sparkles,
   User
 } from "lucide-react";
+import { useTheme } from "next-themes";
 
 function getInitials(fullName: string): string | null {
   if (!fullName || fullName.trim().length === 0) {
@@ -39,6 +48,33 @@ function getInitials(fullName: string): string | null {
       }
       return initials;
     }, "");
+}
+
+function ThemeToggle() {
+  const { theme, themes, setTheme } = useTheme();
+
+  return (
+    <DropdownMenuSub>
+      <DropdownMenuSubTrigger className="gap-2">
+        <Palette className="size-4 text-muted-foreground" aria-hidden="true" />
+        Theme
+      </DropdownMenuSubTrigger>
+      <DropdownMenuPortal>
+        <DropdownMenuSubContent>
+          <DropdownMenuRadioGroup
+            value={theme}
+            onValueChange={value => setTheme(value)}
+          >
+            {themes.map((t, index) => (
+              <DropdownMenuRadioItem key={index} value={t}>
+                {_.capitalize(t)}
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
+        </DropdownMenuSubContent>
+      </DropdownMenuPortal>
+    </DropdownMenuSub>
+  );
 }
 
 export function UserDropdown() {
@@ -152,8 +188,15 @@ export function UserDropdown() {
             Settings
           </DropdownMenuItem>
         </DropdownMenuGroup>
+        <DropdownMenuGroup>
+          <ThemeToggle />
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={() => handleSignOut()}>
+        <DropdownMenuItem
+          variant="destructive"
+          onClick={() => handleSignOut()}
+          className="font-medium data-[variant=destructive]:bg-destructive/25 data-[variant=destructive]:text-destructive-foreground data-[variant=destructive]:focus:text-destructive-foreground data-[variant=destructive]:*:[svg]:!text-destructive-foreground dark:data-[variant=destructive]:focus:bg-destructive/50"
+        >
           <LogOut />
           Log out
         </DropdownMenuItem>
