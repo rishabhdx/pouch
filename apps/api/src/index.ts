@@ -2,7 +2,12 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
+import dotenv from "dotenv";
 import { expressHandler } from "@pouch/auth/server";
+
+dotenv.config({
+  path: "../../.env"
+});
 
 import { rootRouter } from "./routes";
 
@@ -13,24 +18,19 @@ app.use(helmet());
 app.use(
   cors({
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
-    exposedHeaders: ["set-cookie"]
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "x-requested-with",
+      "Cookie"
+    ],
+    exposedHeaders: ["set-cookie"],
+    credentials: true
   })
 );
-app.use(morgan(":method :url :status :req[header] - :response-time ms"));
-// app.use(morgan("dev"));
-// morgan(function (tokens, req, res) {
-//   return [
-//     tokens.method ? tokens.method(req, res) : "-",
-//     tokens.url ? tokens.url(req, res) : "-",
-//     tokens.status ? tokens.status(req, res) : "-",
-//     tokens.res ? tokens.res(req, res, "content-length") : "-",
-//     tokens["response-time"] ? tokens["response-time"](req, res) : "-",
-//     "ms",
-//   ].join(" ");
-// });
+app.use(morgan("dev"));
 
-app.all("/api/auth/{*any}", expressHandler);
+app.all("/api/auth/*splat", expressHandler);
 
 app.use(express.urlencoded({ extended: true }));
 

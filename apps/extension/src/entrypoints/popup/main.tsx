@@ -5,6 +5,7 @@ import {
   createHashHistory,
   createRouter
 } from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@pouch/ui/globals.css";
 import "./style.css";
 
@@ -15,6 +16,9 @@ const hashHistory = createHashHistory();
 
 // Create a new router instance
 const router = createRouter({ routeTree, history: hashHistory });
+
+// Create a client
+const queryClient = new QueryClient();
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
@@ -31,9 +35,9 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>
-      {/* <QueryClientProvider client={queryClient}> */}
-      <RouterProvider router={router} />
-      {/* </QueryClientProvider> */}
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </React.StrictMode>
   );
 }

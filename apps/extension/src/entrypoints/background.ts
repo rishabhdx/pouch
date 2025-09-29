@@ -1,5 +1,5 @@
 import { ACTIONS } from "@/constants";
-import { saveBookmark } from "@/utils/api";
+import { saveBookmark, fetchCollections, fetchTags } from "@/utils/api";
 import { authClient } from "@pouch/auth/client";
 
 export default defineBackground(() => {
@@ -43,10 +43,10 @@ export default defineBackground(() => {
     }
   });
 
-  // browser.runtime.onStartup.addListener(async () => {
-  //   console.log("onStartup background script started.");
-  //   checkAuthSession("Checking auth session on startup...");
-  // });
+  browser.runtime.onStartup.addListener(async () => {
+    console.log("onStartup background script started.");
+    checkAuthSession("Checking auth session on startup...");
+  });
 
   browser.runtime.onInstalled.addListener(async () => {
     console.log("onInstalled background script installed.");
@@ -78,6 +78,11 @@ export default defineBackground(() => {
       }
 
       await browser.storage.local.set({ session: data.session });
+
+      // const collections = await fetchCollections();
+      // const tags = await fetchTags();
+      // console.log({ collections, tags });
+
       console.log("Session data stored in local storage:", data.session);
     } catch (error) {
       console.error("Error checking auth session:", error);

@@ -5,5 +5,6 @@ export default defineConfig({
   clean: true,
   shims: true,
   minify: true,
+  outDir: "./dist",
   noExternal: ["@pouch/auth", "@pouch/db"]
 });

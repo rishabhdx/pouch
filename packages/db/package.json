@@ -8,12 +8,12 @@
   },
   "exports": {
     ".": {
-      "default": "./dist/db/index.js",
-      "types": "./dist/db/index.d.ts"
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./schema": {
-      "default": "./dist/db/schema.js",
-      "types": "./dist/db/schema.d.ts"
+      "default": "./dist/schema.js",
+      "types": "./dist/schema.d.ts"
     }
   },
   "dependencies": {

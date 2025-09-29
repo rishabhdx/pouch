@@ -10,7 +10,8 @@ import {
   decimal,
   jsonb,
   primaryKey,
-  index
+  index,
+  unique
 } from "drizzle-orm/pg-core";
 
 // Better-auth specific schema for authentication
@@ -75,83 +76,92 @@ export const verification = pgTable("verification", {
 });
 
 // Custom application schema
-export const collections = pgTable("collection", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+export const collections = pgTable(
+  "collection",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
 
-  name: varchar("name", { length: 256 }).notNull(),
-  description: text("description"),
+    name: varchar("name", { length: 256 }).notNull(),
+    slug: varchar("slug", { length: 256 }).notNull(),
+    description: text("description"),
 
-  // Timestamps
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .notNull()
-});
+    // Timestamps
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  t => [unique("uq_collections_userId_slug").on(t.userId, t.slug)]
+);
 
-export const bookmarks = pgTable("bookmark", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  collectionId: uuid("collection_id").references(() => collections.id, {
-    onDelete: "set null"
-  }),
-  // tags: uuid("tags_id")
-  //   .array()
-  //   .notNull()
-  //   .default([])
-  //   .references(() => tags.id, {
-  //     onDelete: "set null"
-  //   }),
-  // tags: text("tags").array().default([]).notNull(),
+export const bookmarks = pgTable(
+  "bookmark",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    collectionId: uuid("collection_id").references(() => collections.id, {
+      onDelete: "set null"
+    }),
+    // tags: uuid("tags_id")
+    //   .array()
+    //   .notNull()
+    //   .default([])
+    //   .references(() => tags.id, {
+    //     onDelete: "set null"
+    //   }),
+    // tags: text("tags").array().default([]).notNull(),
 
-  url: text("url").notNull(),
-  name: text("name").notNull(),
-  description: text("description"),
+    url: text("url").notNull(), // *
+    name: text("name").notNull(), // *
+    description: text("description"), // *
 
-  isArchived: boolean("is_archived").default(false).notNull(),
-  isFavorite: boolean("is_favorite").default(false).notNull(),
-  readingProgress: decimal("reading_progress", {
-    precision: 5,
-    scale: 4
-  }).default("0"),
-  readAt: timestamp("read_at", { withTimezone: true }),
+    isArchived: boolean("is_archived").default(false).notNull(), // *
+    isFavorite: boolean("is_favorite").default(false).notNull(), // *
+    readingProgress: decimal("reading_progress", {
+      precision: 5,
+      scale: 4
+    }).default("0"),
+    readAt: timestamp("read_at", { withTimezone: true }),
 
-  // Metadata
-  domain: text("domain"),
-  title: text("title"),
-  canonicalUrl: text("canonical_url"),
-  siteName: varchar("site_name", { length: 256 }),
-  author: varchar("author", { length: 256 }),
-  publishedAt: timestamp("published_at", { withTimezone: true }),
-  imageURL: text("image_url"),
-  locale: varchar("locale", { length: 64 }),
-  type: varchar("type", { length: 64 }),
-  excerpt: text("excerpt"),
+    // Metadata
+    domain: text("domain"), // *
+    title: text("title"), // *
+    canonicalUrl: text("canonical_url"), // ?
+    siteName: varchar("site_name", { length: 256 }),
+    author: varchar("author", { length: 256 }),
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    imageURL: text("image_url"),
+    locale: varchar("locale", { length: 64 }), // ?
+    type: varchar("type", { length: 64 }), // ?
+    excerpt: text("excerpt"), // ?
 
-  // Content
-  content: text("content"),
-  contentHtml: text("content_html"),
-  wordCount: integer("word_count"),
-  readingTimeMinutes: integer("reading_time_minutes"),
+    // Content
+    content: text("content"),
+    contentHtml: text("content_html"),
+    wordCount: integer("word_count"),
+    readingTimeMinutes: integer("reading_time_minutes"),
 
-  // Media
-  featuredImageUrl: text("featured_image_url"),
-  images: jsonb("images").default([]),
+    // Media
+    featuredImageUrl: text("featured_image_url"),
+    images: jsonb("images").default([]),
 
-  // Timestamps
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .notNull()
-});
+    // Timestamps
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  t => [unique("uq_bookmarks_userId_url").on(t.userId, t.url)]
+);
 
 export const bookmarksToTags = pgTable(
   "bookmarks_to_tags",

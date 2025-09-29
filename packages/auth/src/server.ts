@@ -2,15 +2,19 @@ import { betterAuth } from "better-auth";
 import { toNextJsHandler } from "better-auth/next-js";
 import { toNodeHandler } from "better-auth/node";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import dotenv from "dotenv";
 import { db } from "@pouch/db";
+import dotenv from "dotenv";
+// import "dotenv/config";
 
-export { fromNodeHeaders } from "better-auth/node";
+export { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 export { nextCookies } from "better-auth/next-js";
 
 dotenv.config({
-  path: "../../../.env"
+  path: "../../.env"
 });
+
+console.log("DATABASE_URL from auth:", process.env.DATABASE_URL);
+console.log("BETTER_AUTH_SECRET from auth:", process.env.BETTER_AUTH_SECRET);
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -22,6 +26,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     "http://localhost:3000",
     "http://localhost:3001",
+    "http://localhost:8080",
     "moz-extension://*",
     "chrome-extension://*"
   ]

@@ -1,6 +1,7 @@
 import { auth, fromNodeHeaders } from "@pouch/auth/server";
 import type { Request, Response, NextFunction } from "express";
 import type { Session, User } from "@pouch/auth/types";
+import { getHeaders } from "../utils/get-headers";
 
 declare module "express" {
   interface Request {
@@ -29,7 +30,8 @@ export const authenticatedUser = async (
     req.session = session.session;
 
     next();
-  } catch {
+  } catch (error) {
+    console.error("Authentication error:", error);
     res.status(401).json({ message: "Invalid session" });
   }
 };

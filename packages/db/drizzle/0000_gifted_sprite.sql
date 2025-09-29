@@ -56,9 +56,11 @@ CREATE TABLE "collection" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" text NOT NULL,
 	"name" varchar(256) NOT NULL,
+	"slug" varchar(256) NOT NULL,
 	"description" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "uq_collections_userId_slug" UNIQUE("user_id","slug")
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
