@@ -1,7 +1,8 @@
 import { Metadata } from "next";
 import { SidebarInset, SidebarProvider } from "@pouch/ui/components/sidebar";
 
-import { DashboardSidebar } from "@/components/layout/dashboard-sidebar";
+import { DashboardSidebar } from "@/components/dashboard-sidebar";
+// import { DashboardSidebar } from "@/components/layout/dashboard-sidebar";
 import { DashboardSidebarHeader } from "@/components/layout/dashboard-sidebar-header";
 
 export const metadata: Metadata = {

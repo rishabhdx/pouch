@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   useQueryState,
   parseAsArrayOf,
@@ -21,7 +21,7 @@ import {
   Row
 } from "@tanstack/react-table";
 
-import { BookmarksDataTableView } from "@/components/bookmarks/data-table-view";
+import { BookmarksDataListView } from "@/components/bookmarks/data-list-view";
 import { BookmarksDataGridView } from "@/components/bookmarks/data-grid-view";
 import {
   Tabs,
@@ -34,7 +34,6 @@ import { SearchInput } from "@/components/bookmarks/search-input";
 import { Button } from "@pouch/ui/components/button";
 import { ListViewOptions } from "@/components/bookmarks/list-view-options";
 import { FiltersSheet } from "@/components/bookmarks/filters-sheet";
-import { demoBookmarks } from "@/constants/sample-data";
 import { type Bookmark } from "@pouch/db/schema";
 import { useSearchParams } from "next/navigation";
 
@@ -113,6 +112,7 @@ export const columns: ColumnDef<Bookmark>[] = [
 ];
 
 interface BookmarksViewProps {
+  data: Bookmark[];
   preappliedFilters?: {
     favorite?: boolean;
     archived?: boolean;
@@ -121,7 +121,7 @@ interface BookmarksViewProps {
   };
 }
 
-export function BookmarksView({ preappliedFilters }: BookmarksViewProps) {
+export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -134,7 +134,7 @@ export function BookmarksView({ preappliedFilters }: BookmarksViewProps) {
   const searchParams = useSearchParams();
 
   const table = useReactTable({
-    data: demoBookmarks,
+    data: data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -216,6 +216,14 @@ export function BookmarksView({ preappliedFilters }: BookmarksViewProps) {
     });
   }, [searchParams, table, filterMappings]);
 
+  if (data.length === 0) {
+    return (
+      <div className="w-full text-center text-muted-foreground py-8">
+        No bookmarks found. Start by adding some bookmarks!
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       <Tabs defaultValue={layoutView} onValueChange={setLayoutView}>
@@ -225,7 +233,7 @@ export function BookmarksView({ preappliedFilters }: BookmarksViewProps) {
               <TabsTrigger value="grid" aria-label="Grid layout">
                 <LayoutGrid className="size-4" aria-hidden="true" />
               </TabsTrigger>
-              <TabsTrigger value="list" aria-label="Table layout">
+              <TabsTrigger value="list" aria-label="List layout">
                 <Columns3 className="size-4" aria-hidden="true" />
               </TabsTrigger>
             </TabsList>
@@ -250,14 +258,10 @@ export function BookmarksView({ preappliedFilters }: BookmarksViewProps) {
           </div>
         </div>
         <TabsContent value="grid">
-          <Suspense fallback={<div>Loading...</div>}>
-            <BookmarksDataGridView table={table} />
-          </Suspense>
+          <BookmarksDataGridView table={table} />
         </TabsContent>
         <TabsContent value="list">
-          <Suspense fallback={<div>Loading...</div>}>
-            <BookmarksDataTableView table={table} />
-          </Suspense>
+          <BookmarksDataListView table={table} />
         </TabsContent>
       </Tabs>
     </div>

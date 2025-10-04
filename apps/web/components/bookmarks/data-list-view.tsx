@@ -19,7 +19,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function BookmarksDataTableView({
+export function BookmarksDataListView({
   table
 }: {
   table: TanstackTable<Bookmark>;
