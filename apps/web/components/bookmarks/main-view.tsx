@@ -34,6 +34,7 @@ import { SearchInput } from "@/components/bookmarks/search-input";
 import { Button } from "@pouch/ui/components/button";
 import { ListViewOptions } from "@/components/bookmarks/list-view-options";
 import { FiltersSheet } from "@/components/bookmarks/filters-sheet";
+import { BookmarksEmptyState } from "@/components/empty-states/bookmarks";
 import { type Bookmark } from "@pouch/db/schema";
 import { useSearchParams } from "next/navigation";
 
@@ -217,11 +218,7 @@ export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
   }, [searchParams, table, filterMappings]);
 
   if (data.length === 0) {
-    return (
-      <div className="w-full text-center text-muted-foreground py-8">
-        No bookmarks found. Start by adding some bookmarks!
-      </div>
-    );
+    return <BookmarksEmptyState />;
   }
 
   return (
