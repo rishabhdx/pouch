@@ -34,7 +34,8 @@ export default defineBackground(() => {
           title: props.title,
           url: props.url,
           collection: props.collection,
-          tags: props.tags
+          tags: props.tags,
+          metadata: props.metadata
         });
       } catch (error) {
         console.error("saving bookmark failed again:", error);

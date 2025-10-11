@@ -45,11 +45,11 @@ function Index() {
 
     setTitle(tab.title ?? "");
 
-    await browser.tabs.sendMessage(tab.id, {
-      type: ACTIONS.EXTRACT_METADATA,
-      title: tab.title,
-      url: tab.url
-    });
+    // await browser.tabs.sendMessage(tab.id, {
+    //   type: ACTIONS.EXTRACT_METADATA,
+    //   title: tab.title,
+    //   url: tab.url
+    // });
   };
 
   const handleSaveBookmark = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -65,7 +65,7 @@ function Index() {
     await browser.runtime.sendMessage({
       type: ACTIONS.SAVE_BOOKMARK,
       title: title,
-      url: tab.url,
+      url: tab.url!,
       collection: collection,
       tags: tags
     });

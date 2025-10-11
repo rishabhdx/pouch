@@ -5,6 +5,8 @@ import { bookmarks, type NewBookmark } from "@pouch/db/schema";
 export const createBookmark = async (req: Request, res: Response) => {
   const body: NewBookmark = req.body;
 
+  console.log("Request body:", body);
+
   if (
     body.name.trim().toLowerCase() === "" ||
     body.url.trim().toLowerCase() === ""
@@ -17,18 +19,22 @@ export const createBookmark = async (req: Request, res: Response) => {
   }
 
   try {
-    const newBookmark = await db
-      .insert(bookmarks)
-      .values({
-        name: body.name,
-        url: body.url,
-        userId: req.user!.id,
-        collectionId: body.collectionId,
-        domain: body.domain,
-        title: body.title
-      })
-      .returning();
-  } catch (error) {}
+    // const newBookmark = await db
+    //   .insert(bookmarks)
+    //   .values({
+    //     name: body.name,
+    //     url: body.url,
+    //     userId: req.user!.id,
+    //     collectionId: body.collectionId,
+    //     domain: body.domain,
+    //     title: body.title
+    //   })
+    //   .returning();
 
-  res.status(201).json({ message: "Bookmark created successfully" });
+    // console.log("New bookmark created:", newBookmark);
+
+    res.status(201).json({ message: "Bookmark created successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error });
+  }
 };

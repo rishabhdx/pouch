@@ -48,6 +48,20 @@ export async function saveBookmark(props: {
   url: string;
   collection: string;
   tags: string[];
+  metadata: {
+    title: string;
+    description: string;
+    domain: string;
+    ogTitle: string | null;
+    ogDescription: string | null;
+    ogImage: string | null;
+    ogUrl: string | null;
+    ogType: string | null;
+    twitterTitle: string | null;
+    twitterDescription: string | null;
+    twitterImage: string | null;
+    twitterCard: string | null;
+  };
 }) {
   console.log("saveBookmark called with props:", props);
   console.log("WXT_API_URL:", import.meta.env.WXT_API_URL);

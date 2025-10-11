@@ -4,3 +4,6 @@ export const ACTIONS = {
   SAVE_BOOKMARK: "save-bookmark",
   EXTRACT_METADATA_AND_SAVE: "extract-metadata-and-save"
 } as const;
+
+export type Action = (typeof ACTIONS)[keyof typeof ACTIONS];
+// export type ACTIONS = keyof typeof ACTIONS;
