@@ -2,7 +2,7 @@ import { Button, buttonVariants } from "@pouch/ui/components/button";
 import { Input } from "@pouch/ui/components/input";
 import { Label } from "@pouch/ui/components/label";
 import { RadioGroup, RadioGroupItem } from "@pouch/ui/components/radio-group";
-import { useStore } from "@/lib/store";
+import { useStore, type StoreCollectionType } from "@/lib/store";
 import { cn } from "@pouch/ui/lib/utils";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { ArrowLeft, LoaderCircle, TriangleAlert } from "lucide-react";
@@ -10,12 +10,12 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCollections } from "@/utils/api";
 import { useEffect, useState } from "react";
 
-type Collection = {
-  name: string;
-  id: string;
-  slug: string;
-  description: string | null;
-};
+// type Collection = {
+//   name: string;
+//   id: string;
+//   slug: string;
+//   description: string | null;
+// };
 
 export const Route = createFileRoute("/collections")({
   component: Collections,
@@ -37,12 +37,12 @@ function Collections() {
   const setCollection = useStore(store => store.setCollection);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredCollections, setFilteredCollections] = useState<Collection[]>(
-    []
-  );
+  const [filteredCollections, setFilteredCollections] = useState<
+    StoreCollectionType[]
+  >([]);
 
   const { data, isLoading, error } = useQuery<{
-    collections: Collection[];
+    collections: StoreCollectionType[];
   }>({
     queryKey: ["collections"],
     queryFn: fetchCollections,
@@ -62,6 +62,11 @@ function Collections() {
       );
       setFilteredCollections(filtered);
     }
+  };
+
+  const handleRadioChange = (slug: string) => {
+    const item = filteredCollections.find(col => col.slug === slug);
+    setCollection(item || collection);
   };
 
   // Handle loading state
@@ -127,8 +132,8 @@ function Collections() {
         <div className="flex flex-col space-y-2">
           <RadioGroup
             className="gap-1"
-            value={collection}
-            onValueChange={setCollection}
+            value={collection.slug}
+            onValueChange={handleRadioChange}
           >
             {/* <div className="relative flex w-full pr-3 items-center gap-2 rounded-lg border border-transparent has-[[data-state=checked]]:border-input has-[[data-state=checked]]:bg-accent">
               <div className="grid grow gap-2">
@@ -152,7 +157,7 @@ function Collections() {
                   className="relative flex w-full pr-3 items-center gap-2 rounded-lg border border-transparent has-[[data-state=checked]]:border-input has-[[data-state=checked]]:bg-accent"
                 >
                   <div className="grid grow gap-2 px-3 py-2">
-                    <Label htmlFor={collection.name} className="">
+                    <Label htmlFor={collection.slug} className="">
                       {collection.name}
                       {/* <span className="text-xs font-normal leading-[inherit] text-muted-foreground">
                     (X items)
@@ -160,7 +165,7 @@ function Collections() {
                     </Label>
                     {collection.description && (
                       <p
-                        id={`${collection.name}-description`}
+                        id={`${collection.slug}-description`}
                         className="text-xs text-muted-foreground truncate"
                       >
                         {collection.description}
@@ -168,9 +173,9 @@ function Collections() {
                     )}
                   </div>
                   <RadioGroupItem
-                    value={collection.name}
-                    id={collection.name}
-                    aria-describedby={`${collection.name}-description`}
+                    value={collection.slug}
+                    id={collection.slug}
+                    aria-describedby={`${collection.slug}-description`}
                     className="order-1 after:absolute after:inset-0 aspect-square size-4 rounded-full border border-input shadow-sm shadow-black/5 outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring/70 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                     indicatorIconClassName="fill-background"
                   />

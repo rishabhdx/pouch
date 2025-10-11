@@ -62,12 +62,12 @@ function Index() {
 
     if (!tab.id) return;
 
-    await browser.runtime.sendMessage({
+    await browser.tabs.sendMessage(tab.id, {
       type: ACTIONS.SAVE_BOOKMARK,
       title: title,
       url: tab.url!,
-      collection: collection,
-      tags: tags
+      collectionId: collection.id,
+      tags: tags.map(tag => tag.id)
     });
   };
 
@@ -97,7 +97,7 @@ function Index() {
               aria-hidden="true"
             />
             <p className="text-sm font-medium">Save to</p>
-            <Badge variant="secondary">{collection}</Badge>
+            <Badge variant="secondary">{collection.name}</Badge>
           </div>
 
           <Link

@@ -46,7 +46,7 @@ export async function createTag(name: string) {
 export async function saveBookmark(props: {
   title: string;
   url: string;
-  collection: string;
+  collectionId: string;
   tags: string[];
   metadata: {
     title: string;
@@ -71,8 +71,9 @@ export async function saveBookmark(props: {
     {
       title: props.title,
       url: props.url,
-      collection: props.collection,
-      tags: props.tags
+      collectionId: props.collectionId,
+      tags: props.tags,
+      metadata: props.metadata
     }
   );
 

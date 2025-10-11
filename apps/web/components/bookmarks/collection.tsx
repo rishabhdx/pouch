@@ -1,6 +1,5 @@
 import { db } from "@pouch/db";
-import { bookmarks, type Collection } from "@pouch/db/schema";
-import { and, eq } from "drizzle-orm";
+import { type Collection } from "@pouch/db/schema";
 import { BookmarksView } from "@/components/bookmarks/main-view";
 
 interface CollectionBookmarksProps {
@@ -13,16 +12,28 @@ export async function CollectionBookmarks({
   collection,
   userId
 }: CollectionBookmarksProps) {
-  await new Promise(resolve => setTimeout(resolve, 10000));
-  const allBookmarks = await db
-    .select()
-    .from(bookmarks)
-    .where(
+  // const allBookmarks = await db
+  //   .select()
+  //   .from(bookmarks)
+  //   .where(
+  //     and(
+  //       eq(bookmarks.userId, userId),
+  //       eq(bookmarks.collectionId, collection.id)
+  //     )
+  //   );
+
+  const allBookmarks = await db.query.bookmarks.findMany({
+    where: (bookmark, { eq, and }) =>
       and(
-        eq(bookmarks.userId, userId),
-        eq(bookmarks.collectionId, collection.id)
-      )
-    );
+        eq(bookmark.userId, userId),
+        eq(bookmark.collectionId, collection.id)
+      ),
+    orderBy: (bookmark, { desc }) => [desc(bookmark.createdAt)],
+    with: {
+      collection: true
+    }
+  });
+  // type BookmarkWithCollection = (typeof allBookmarks)[number];
 
   return <BookmarksView data={allBookmarks} />;
 }

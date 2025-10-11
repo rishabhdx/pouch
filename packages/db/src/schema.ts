@@ -119,8 +119,7 @@ export const bookmarks = pgTable(
     // tags: text("tags").array().default([]).notNull(),
 
     url: text("url").notNull(), // *
-    name: text("name").notNull(), // *
-    description: text("description"), // *
+    title: text("title").notNull(), // *
 
     isArchived: boolean("is_archived").default(false).notNull(), // *
     isFavorite: boolean("is_favorite").default(false).notNull(), // *
@@ -132,15 +131,27 @@ export const bookmarks = pgTable(
 
     // Metadata
     domain: text("domain"), // *
-    title: text("title"), // *
-    canonicalUrl: text("canonical_url"), // ?
-    siteName: varchar("site_name", { length: 256 }),
-    author: varchar("author", { length: 256 }),
-    publishedAt: timestamp("published_at", { withTimezone: true }),
-    imageURL: text("image_url"),
-    locale: varchar("locale", { length: 64 }), // ?
-    type: varchar("type", { length: 64 }), // ?
-    excerpt: text("excerpt"), // ?
+    documentTitle: text("document_title"), // *
+    documentDescription: text("document_description"), // *
+    ogTitle: text("og_title"),
+    ogDescription: text("og_description"),
+    ogImage: text("og_image"),
+    ogUrl: text("og_url"),
+    ogType: text("og_type"),
+    twitterTitle: text("twitter_title"),
+    twitterDescription: text("twitter_description"),
+    twitterImage: text("twitter_image"),
+    twitterCard: text("twitter_card"),
+
+    // Additional Metadata
+    // canonicalUrl: text("canonical_url"), // ?
+    // siteName: varchar("site_name", { length: 256 }),
+    // author: varchar("author", { length: 256 }),
+    // publishedAt: timestamp("published_at", { withTimezone: true }),
+    // imageURL: text("image_url"),
+    // locale: varchar("locale", { length: 64 }), // ?
+    // type: varchar("type", { length: 64 }), // ?
+    // excerpt: text("excerpt"), // ?
 
     // Content
     content: text("content"),
@@ -149,8 +160,8 @@ export const bookmarks = pgTable(
     readingTimeMinutes: integer("reading_time_minutes"),
 
     // Media
-    featuredImageUrl: text("featured_image_url"),
-    images: jsonb("images").default([]),
+    // featuredImageUrl: text("featured_image_url"),
+    // images: jsonb("images").default([]),
 
     // Timestamps
     createdAt: timestamp("created_at", { withTimezone: true })

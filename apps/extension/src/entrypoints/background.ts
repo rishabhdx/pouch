@@ -33,7 +33,7 @@ export default defineBackground(() => {
         await saveBookmark({
           title: props.title,
           url: props.url,
-          collection: props.collection,
+          collectionId: props.collectionId,
           tags: props.tags,
           metadata: props.metadata
         });

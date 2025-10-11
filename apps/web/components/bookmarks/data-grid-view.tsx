@@ -5,7 +5,8 @@ import { Button } from "@pouch/ui/components/button";
 import { Bookmark } from "@pouch/db/schema";
 
 const GridItem = ({ row }: { row: Row<Bookmark> }) => {
-  const { name, url, domain, isFavorite, isArchived, createdAt } = row.original;
+  const { title, url, domain, isFavorite, isArchived, createdAt } =
+    row.original;
 
   return (
     <div className="w-full border border-border rounded-md shadow-sm bg-card flex flex-col overflow-hidden">
@@ -18,9 +19,9 @@ const GridItem = ({ row }: { row: Row<Bookmark> }) => {
           target="_blank"
           rel="noopener noreferrer"
           className="font-semibold text-lg text-blue-600 hover:underline line-clamp-2"
-          title={name}
+          title={title}
         >
-          {name}
+          {title}
         </a>
         <div className="text-sm text-muted-foreground truncate">{domain}</div>
         {/* <div className="flex flex-wrap gap-1 mt-1">
