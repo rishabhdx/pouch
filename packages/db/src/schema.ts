@@ -271,3 +271,7 @@ export type NewBookmarkTag = typeof bookmarksToTags.$inferInsert;
 // export type NewUserSession = typeof userSessions.$inferInsert;
 // export type ImportJob = typeof importJobs.$inferSelect;
 // export type NewImportJob = typeof importJobs.$inferInsert;
+
+export type BookmarkWithCollection = typeof bookmarks.$inferSelect & {
+  collection: typeof collections.$inferSelect | null;
+};

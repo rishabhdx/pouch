@@ -29,17 +29,25 @@ import {
   TabsList,
   TabsTrigger
 } from "@pouch/ui/components/tabs";
-import { ArrowUpDown, Columns3, LayoutGrid } from "lucide-react";
+import {
+  ArrowUpDown,
+  Columns3,
+  FolderOpen,
+  Globe,
+  Heart,
+  LayoutGrid
+} from "lucide-react";
 import { SearchInput } from "@/components/bookmarks/search-input";
 import { Button } from "@pouch/ui/components/button";
 import { ListViewOptions } from "@/components/bookmarks/list-view-options";
 import { FiltersSheet } from "@/components/bookmarks/filters-sheet";
 import { BookmarksEmptyState } from "@/components/empty-states/bookmarks";
-import { type Bookmark } from "@pouch/db/schema";
+import { type BookmarkWithCollection } from "@pouch/db/schema";
 import { useSearchParams } from "next/navigation";
+import { Badge } from "@pouch/ui/components/badge";
 
-const collectionsFilterFunction: FilterFn<Bookmark> = (
-  row: Row<Bookmark>,
+const collectionsFilterFunction: FilterFn<BookmarkWithCollection> = (
+  row: Row<BookmarkWithCollection>,
   columnId: string,
   filterValue: string[],
   addMeta: (meta: any) => void
@@ -53,7 +61,7 @@ const collectionsFilterFunction: FilterFn<Bookmark> = (
   return filterValue.includes(collectionId);
 };
 
-export const columns: ColumnDef<Bookmark>[] = [
+export const columns: ColumnDef<BookmarkWithCollection>[] = [
   {
     accessorKey: "title",
     header: "Title",
@@ -70,8 +78,17 @@ export const columns: ColumnDef<Bookmark>[] = [
   },
   {
     accessorKey: "collectionId",
-    header: "Collection",
-    cell: ({ row }) => row.original.collectionId || "No Collection",
+    header: () => (
+      <div className="flex items-center gap-2">
+        <FolderOpen className="size-4" aria-hidden="true" />
+        Collection
+      </div>
+    ),
+    cell: ({ row }) => {
+      if (!row.original.collection) return null;
+
+      return <Badge variant="secondary">{row.original.collection.name}</Badge>;
+    },
     filterFn: collectionsFilterFunction
   },
   // {
@@ -81,39 +98,76 @@ export const columns: ColumnDef<Bookmark>[] = [
   // },
   {
     accessorKey: "domain",
-    header: "Domain"
+    header: () => (
+      <div className="flex items-center gap-2">
+        <Globe className="size-4" aria-hidden="true" />
+        Domain
+      </div>
+    )
   },
   {
     accessorKey: "isFavorite",
-    header: "Favorite",
+    header: () => (
+      <div className="flex items-center gap-2">
+        <Heart className="size-4" aria-hidden="true" />
+        Favorite
+      </div>
+    ),
     // accessorFn: row => (row.isFavorite ? "⭐" : ""),
-    cell: ({ row }) => (row.original.isFavorite ? "Yes" : "No")
+    cell: ({ row }) => {
+      return row.original.isFavorite ? (
+        <Heart className="size-4 fill-foreground" aria-hidden="true" />
+      ) : null;
+    }
   },
   {
-    accessorKey: "isArchived",
-    header: "Archived",
-    cell: ({ row }) => (row.original.isArchived ? "Yes" : "No")
+    accessorKey: "url",
+    header: () => (
+      <div className="flex items-center gap-2">
+        <Globe className="size-4" aria-hidden="true" />
+        URL
+      </div>
+    ),
+    cell: ({ row }) => (
+      <a
+        href={row.original.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 hover:underline max-w-[18rem] block truncate"
+      >
+        {row.original.url}
+      </a>
+    )
   },
+  // {
+  //   accessorKey: "isArchived",
+  //   header: "Archived",
+  //   cell: ({ row }) => (row.original.isArchived ? "Yes" : "No")
+  // },
   {
     accessorKey: "createdAt",
-    // header: "Created At",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className=""
         >
           Created At
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString()
+    cell: ({ row }) => (
+      <p className="pl-4 font-mono text-sm tracking-tight">
+        {new Date(row.original.createdAt).toLocaleDateString()}
+      </p>
+    )
   }
 ];
 
 interface BookmarksViewProps {
-  data: Bookmark[];
+  data: BookmarkWithCollection[];
   preappliedFilters?: {
     favorite?: boolean;
     archived?: boolean;
@@ -125,7 +179,9 @@ interface BookmarksViewProps {
 export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    isFavorite: false
+  });
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
     pageSize: 12 //default page size

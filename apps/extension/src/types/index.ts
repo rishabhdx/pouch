@@ -1,5 +1,6 @@
 export interface Metadata {
   title: string;
+  domain: string;
   description: string | null | undefined;
   ogTitle: string | null | undefined;
   ogDescription: string | null | undefined;

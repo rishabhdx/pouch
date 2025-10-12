@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { Metadata } from "@/types";
 
 export async function fetchCollections() {
   const response = await axios.get(
@@ -48,24 +49,8 @@ export async function saveBookmark(props: {
   url: string;
   collectionId: string;
   tags: string[];
-  metadata: {
-    title: string;
-    description: string;
-    domain: string;
-    ogTitle: string | null;
-    ogDescription: string | null;
-    ogImage: string | null;
-    ogUrl: string | null;
-    ogType: string | null;
-    twitterTitle: string | null;
-    twitterDescription: string | null;
-    twitterImage: string | null;
-    twitterCard: string | null;
-  };
+  metadata: Metadata;
 }) {
-  console.log("saveBookmark called with props:", props);
-  console.log("WXT_API_URL:", import.meta.env.WXT_API_URL);
-
   const { data } = await axios.post(
     `${import.meta.env.WXT_API_URL}/bookmarks/create`,
     {

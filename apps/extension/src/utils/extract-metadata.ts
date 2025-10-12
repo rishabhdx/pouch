@@ -3,6 +3,7 @@ import { type Metadata } from "@/types";
 export function extractMetadataFromDocument(document: Document): Metadata {
   const meta = {
     title: document.title,
+    domain: document.location.hostname,
     description: document
       .querySelector('meta[name="description"]')
       ?.getAttribute("content"),

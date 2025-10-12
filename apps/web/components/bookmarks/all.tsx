@@ -1,4 +1,5 @@
 import { db } from "@pouch/db";
+import { BookmarkWithCollection } from "@pouch/db/schema";
 import { BookmarksView } from "@/components/bookmarks/main-view";
 
 interface AllBookmarksProps {
@@ -11,10 +12,13 @@ export async function AllBookmarks({ userId }: AllBookmarksProps) {
   //   .from(bookmarks)
   //   .where(eq(bookmarks.userId, userId));
 
-  const allBookmarks = await db.query.bookmarks.findMany({
-    where: (bookmark, { eq }) => eq(bookmark.userId, userId),
-    orderBy: (bookmark, { desc }) => [desc(bookmark.createdAt)]
-  });
+  const allBookmarks: BookmarkWithCollection[] =
+    await db.query.bookmarks.findMany({
+      where: (bookmark, { and, eq }) =>
+        and(eq(bookmark.userId, userId), eq(bookmark.isArchived, false)),
+      orderBy: (bookmark, { desc }) => [desc(bookmark.createdAt)],
+      with: { collection: true }
+    });
 
   return <BookmarksView data={allBookmarks} />;
 }

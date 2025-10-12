@@ -12,7 +12,7 @@ import {
   TableRow
 } from "@pouch/ui/components/table";
 import { Button } from "@pouch/ui/components/button";
-import { Bookmark } from "@pouch/db/schema";
+import { Bookmark, BookmarkWithCollection } from "@pouch/db/schema";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -22,10 +22,10 @@ interface DataTableProps<TData, TValue> {
 export function BookmarksDataListView({
   table
 }: {
-  table: TanstackTable<Bookmark>;
+  table: TanstackTable<BookmarkWithCollection>;
 }) {
   return (
-    <div className="">
+    <div>
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
