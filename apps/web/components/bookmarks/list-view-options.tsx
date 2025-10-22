@@ -8,9 +8,13 @@ import {
   DropdownMenuTrigger
 } from "@pouch/ui/components/dropdown-menu";
 import { Button } from "@pouch/ui/components/button";
-import { Bookmark } from "@pouch/db/schema";
+import { type BookmarkWithCollection } from "@pouch/db/schema";
 
-export function ListViewOptions({ table }: { table: Table<Bookmark> }) {
+export function ListViewOptions({
+  table
+}: {
+  table: Table<BookmarkWithCollection>;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

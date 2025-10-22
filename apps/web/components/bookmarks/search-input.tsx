@@ -1,11 +1,7 @@
 "use client";
 
-import { useQueryState } from "nuqs";
-import { type Table } from "@tanstack/react-table";
 import { Filter } from "lucide-react";
 import { Input } from "@pouch/ui/components/input";
-import { useEffect, type ChangeEvent } from "react";
-import { Bookmark } from "@pouch/db/schema";
 
 interface SearchInputProps {
   value: string;
@@ -13,24 +9,6 @@ interface SearchInputProps {
 }
 
 export function SearchInput({ value, setValue }: SearchInputProps) {
-  // useEffect(() => {
-  //   if (title) {
-  //     table.getColumn("title")?.setFilterValue(title);
-  //   }
-  // }, []);
-
-  // const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   const value = event.target.value;
-
-  //   if (!value || value === "") {
-  //     setTitle(null);
-  //   } else {
-  //     setTitle(value);
-  //   }
-
-  //   table.getColumn("title")?.setFilterValue(event.target.value);
-  // };
-
   return (
     <div className="shrink-0 relative max-w-[15rem] w-full">
       <Input

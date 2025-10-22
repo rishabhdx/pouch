@@ -183,10 +183,15 @@ export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
     isFavorite: false
   });
   const [pagination, setPagination] = useState({
-    pageIndex: 0, //initial page index
-    pageSize: 12 //default page size
+    pageIndex: 0, // initial page index
+    pageSize: 12 // default page size
   });
   const [layoutView, setLayoutView] = useState<string>("grid");
+
+  const [searchQuery, setSearchQuery] = useQueryState(
+    "q",
+    parseAsString.withDefault("")
+  );
 
   const searchParams = useSearchParams();
 
@@ -204,15 +209,12 @@ export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
     state: {
       sorting,
       columnFilters,
+      globalFilter: searchQuery,
       columnVisibility,
       pagination
     }
   });
 
-  const [title, setTitle] = useQueryState(
-    "title",
-    parseAsString.withDefault("")
-  );
   const [favorite, setFavorite] = useQueryState(
     "favorite",
     parseAsBoolean.withDefault(preappliedFilters?.favorite ?? false)
@@ -255,6 +257,11 @@ export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
         queryParam: "collections",
         columnId: "collectionId",
         transform: (value: string | null) => value?.split(";") || []
+      },
+      {
+        queryParam: "q",
+        columnId: "",
+        transform: (value: string | null) => value || ""
       }
     ],
     []
@@ -263,12 +270,21 @@ export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
   useEffect(() => {
     // Reset all filters once
     table.resetColumnFilters();
+    table.resetGlobalFilter();
 
     filterMappings.forEach(({ queryParam, columnId, transform }) => {
       const paramValue = searchParams.get(queryParam);
-      if (paramValue) {
+
+      if (!paramValue) return;
+
+      if (queryParam !== "q") {
         const filterValue = transform(paramValue);
         table.getColumn(columnId)?.setFilterValue(filterValue);
+      }
+
+      if (queryParam === "q") {
+        const filterValue = transform(paramValue);
+        table.setGlobalFilter(filterValue);
       }
     });
   }, [searchParams, table, filterMappings]);
@@ -290,7 +306,7 @@ export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
                 <Columns3 className="size-4" aria-hidden="true" />
               </TabsTrigger>
             </TabsList>
-            <SearchInput value={title} setValue={setTitle} />
+            <SearchInput value={searchQuery} setValue={setSearchQuery} />
           </div>
           <div className="flex items-center gap-2">
             {layoutView === "list" && <ListViewOptions table={table} />}

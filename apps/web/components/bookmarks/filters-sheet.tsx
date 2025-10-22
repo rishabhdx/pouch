@@ -20,10 +20,10 @@ import { Separator } from "@pouch/ui/components/separator";
 import { ArchivedSheetFilter } from "@/components/bookmarks/archived-sheet-filter";
 import { FavouritesSheetFilter } from "@/components/bookmarks/favourites-sheet-filter";
 import { useSearchParams } from "next/navigation";
-import { type Bookmark } from "@pouch/db/schema";
+import { type BookmarkWithCollection } from "@pouch/db/schema";
 
 interface FilterSheetProps {
-  table: Table<Bookmark>;
+  table: Table<BookmarkWithCollection>;
   favorite: boolean | null;
   setFavorite: (value: boolean | null) => void;
   archived: boolean | null;
