@@ -10,13 +10,6 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCollections } from "@/utils/api";
 import { useEffect, useState } from "react";
 
-// type Collection = {
-//   name: string;
-//   id: string;
-//   slug: string;
-//   description: string | null;
-// };
-
 export const Route = createFileRoute("/collections")({
   component: Collections,
   beforeLoad: async () => {

@@ -2,6 +2,8 @@ export const ACTIONS = {
   INITIATE_SIGNIN_FROM_WELCOME: "initiate-signin-from-welcome",
   EXTRACT_METADATA: "extract-metadata",
   SAVE_BOOKMARK: "save-bookmark",
+  SAVE_BOOKMARK_SUCCESS: "save-bookmark-failure",
+  SAVE_BOOKMARK_FAILURE: "save-bookmark-success",
   EXTRACT_METADATA_AND_SAVE: "extract-metadata-and-save"
 } as const;
 

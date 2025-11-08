@@ -2,6 +2,9 @@
 
 A modern, privacy-first, open-source bookmark manager built with React, Next.js, and TypeScript. Pouch offers both a web application and browser extension for seamless bookmark management across all your devices.
 
+> **⚠️ Under Active Development**  
+> This project is currently under active development. Features and APIs may change frequently. Use in production at your own risk.
+
 ## ✨ Features
 
 ### 🌐 Web Application

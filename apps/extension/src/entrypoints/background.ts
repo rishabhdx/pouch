@@ -1,6 +1,7 @@
 import { ACTIONS } from "@/constants";
-import { saveBookmark, fetchCollections, fetchTags } from "@/utils/api";
+import { saveBookmark } from "@/utils/api";
 import { authClient } from "@pouch/auth/client";
+import { AxiosError } from "axios";
 
 export default defineBackground(() => {
   console.log("Hello background.", { id: browser.runtime.id });
@@ -37,32 +38,34 @@ export default defineBackground(() => {
           tags: props.tags,
           metadata: props.metadata
         });
+
+        await browser.runtime.sendMessage({
+          type: ACTIONS.SAVE_BOOKMARK_SUCCESS
+        });
       } catch (error) {
-        console.error("saving bookmark failed again:", error);
+        if (error instanceof AxiosError) {
+          await browser.runtime.sendMessage({
+            type: ACTIONS.SAVE_BOOKMARK_FAILURE,
+            error: error.response?.data.message || "Failed to save bookmark"
+          });
+
+          return;
+        }
+
+        await browser.runtime.sendMessage({
+          type: ACTIONS.SAVE_BOOKMARK_FAILURE,
+          error: "Failed to save bookmark"
+        });
       }
-      return;
     }
   });
 
   browser.runtime.onStartup.addListener(async () => {
-    console.log("onStartup background script started.");
     checkAuthSession("Checking auth session on startup...");
   });
 
   browser.runtime.onInstalled.addListener(async () => {
-    console.log("onInstalled background script installed.");
     await checkAuthSession("Checking auth session on install...");
-
-    // const session = await authClient.getSession();
-
-    // if (!session) {
-    //   await browser.tabs.create({
-    //     url: "http://localhost:3000/auth/sign-in"
-    //   });
-    //   return;
-    // }
-
-    // console.log("Current session on install:", session); // this is getting logged
   });
 
   const checkAuthSession = async (msg: string) => {
@@ -80,24 +83,11 @@ export default defineBackground(() => {
 
       await browser.storage.local.set({ session: data.session });
 
-      // const collections = await fetchCollections();
-      // const tags = await fetchTags();
-      // console.log({ collections, tags });
-
       console.log("Session data stored in local storage:", data.session);
     } catch (error) {
       console.error("Error checking auth session:", error);
       await browser.storage.local.remove("session");
       return null;
     }
-
-    // const sessionKey = await browser.storage.local.get("session");
-
-    // if (sessionKey) {
-    //   await browser.storage.local.set({ session: session.data });
-    //   console.log("Session data stored in local storage:", session.data);
-    // } else {
-    //   await browser.storage.local.set({ session: session.data });
-    // }
   };
 });

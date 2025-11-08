@@ -62,6 +62,19 @@ export const createBookmark = async (req: Request, res: Response) => {
 
     res.status(201).json({ message: "Bookmark created successfully" });
   } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error creating bookmark:", error);
+      const errorCode =
+        error.cause && typeof error.cause === "object" && "code" in error.cause
+          ? error.cause.code
+          : undefined;
+
+      if (errorCode === "23505") {
+        return res
+          .status(409)
+          .json({ message: "Bookmark with this URL already exists." });
+      }
+    }
     res.status(500).json({ message: "Internal server error", error });
   }
 };

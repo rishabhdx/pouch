@@ -25,7 +25,7 @@ export function SearchBox() {
         className="cursor-pointer"
         onClick={() => setOpen(true)}
       >
-        <Search className="size-4 text-muted-foreground" />
+        <Search className="size-4 text-muted-foreground" aria-hidden="true" />
         Search
         <kbd className="-me-1 ms-12 inline-flex h-5 max-h-full items-center rounded border border-border bg-background px-1 font-[inherit] text-[0.625rem] font-medium text-muted-foreground/70">
           ⌘K

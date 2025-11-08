@@ -2,10 +2,17 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { browser } from "wxt/browser";
 import { Button, buttonVariants } from "@pouch/ui/components/button";
 import { Separator } from "@pouch/ui/components/separator";
-import { ArrowUpRight, FolderOpen, Hash } from "lucide-react";
-import { useEffect } from "react";
+import {
+  ArrowUpRight,
+  Check,
+  FolderOpen,
+  Hash,
+  TriangleAlert
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import { Textarea } from "@pouch/ui/components/textarea";
 import { Badge } from "@pouch/ui/components/badge";
+import { Spinner } from "@pouch/ui/components/spinner";
 import { cn } from "@pouch/ui/lib/utils";
 import { useStore } from "@/lib/store";
 import { ACTIONS } from "@/constants";
@@ -31,6 +38,35 @@ function Index() {
   const collection = useStore(store => store.collection);
   const tags = useStore(store => store.tags);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleMessage = (
+      message: Record<string, unknown>,
+      sender: globalThis.Browser.runtime.MessageSender,
+      sendResponse: (response?: any) => void
+    ) => {
+      switch (message.type) {
+        case ACTIONS.SAVE_BOOKMARK_FAILURE:
+          handleSaveBookmarkFailure(message.error as string);
+          break;
+        case ACTIONS.SAVE_BOOKMARK_SUCCESS:
+          handleSaveBookmarkSuccess();
+          break;
+        default:
+          console.warn("Unknown message type received in popup:", message);
+      }
+    };
+
+    browser.runtime.onMessage.addListener(handleMessage);
+
+    return () => {
+      browser.runtime.onMessage.removeListener(handleMessage);
+    };
+  }, []);
+
   useEffect(() => {
     gatherInfo();
   }, []);
@@ -44,31 +80,50 @@ function Index() {
     if (!tab.id) return;
 
     setTitle(tab.title ?? "");
-
-    // await browser.tabs.sendMessage(tab.id, {
-    //   type: ACTIONS.EXTRACT_METADATA,
-    //   title: tab.title,
-    //   url: tab.url
-    // });
   };
 
   const handleSaveBookmark = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const [tab] = await browser.tabs.query({
-      active: true,
-      currentWindow: true
-    });
+    setIsLoading(true);
 
-    if (!tab.id) return;
+    try {
+      const [tab] = await browser.tabs.query({
+        active: true,
+        currentWindow: true
+      });
 
-    await browser.tabs.sendMessage(tab.id, {
-      type: ACTIONS.SAVE_BOOKMARK,
-      title: title,
-      url: tab.url!,
-      collectionId: collection.id,
-      tags: tags.map(tag => tag.id)
-    });
+      if (!tab.id) return;
+
+      await browser.tabs.sendMessage(tab.id, {
+        type: ACTIONS.SAVE_BOOKMARK,
+        title: title,
+        url: tab.url!,
+        tabId: tab.id,
+        collectionId: collection.id,
+        tags: tags.map(tag => tag.id)
+      });
+    } catch (error) {
+      console.error("errors and errors:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSaveBookmarkSuccess = () => {
+    setSuccess("Bookmark saved successfully!");
+
+    setTimeout(() => {
+      setSuccess(null);
+    }, 5000);
+  };
+
+  const handleSaveBookmarkFailure = (errorMessage: string) => {
+    setError(errorMessage);
+
+    setTimeout(() => {
+      setError(null);
+    }, 5000);
   };
 
   return (
@@ -76,21 +131,17 @@ function Index() {
       <form
         className="bg-card flex flex-col space-y-4"
         onSubmit={handleSaveBookmark}
+        aria-disabled={isLoading}
       >
         <Textarea
           placeholder="Type here..."
           className="w-full bg-secondary text-sm resize-none"
           value={title}
           onChange={e => setTitle(e.target.value)}
+          disabled={isLoading}
         />
-        {/* <p className="text-base font-medium">{tabTitle}</p> */}
-        {/* <Input placeholder="Type here..." className="w-full" /> */}
         <Separator className="w-full" />
         <div className="w-full flex justify-between items-center">
-          {/* <Label htmlFor="collection" className="text-muted-foreground">
-            Save to
-          </Label> */}
-
           <div className="flex gap-2 items-center">
             <FolderOpen
               className="size-4 text-muted-foreground"
@@ -107,38 +158,15 @@ function Index() {
                 variant: "ghost",
                 size: "sm",
                 className: "text-muted-foreground"
-              })
+              }),
+              isLoading && "pointer-events-none"
             )}
+            disabled={isLoading}
             // className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground"
           >
             Choose folder
             <ArrowUpRight className="size-4" aria-hidden="true" />
           </Link>
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">Open</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-96 h-96" align="start">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  Profile
-                  <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup value={"bottom"}>
-                <DropdownMenuRadioItem value="top">Top</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="bottom">
-                  Bottom
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="right">
-                  Right
-                </DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu> */}
         </div>
         <Separator className="w-full" />
         <div className="w-full flex justify-between items-center">
@@ -155,8 +183,10 @@ function Index() {
                 variant: "ghost",
                 size: "sm",
                 className: "text-muted-foreground"
-              })
+              }),
+              isLoading && "pointer-events-none"
             )}
+            disabled={isLoading}
             // className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground"
           >
             Add tags
@@ -164,7 +194,33 @@ function Index() {
           </Link>
         </div>
 
-        <Button type="submit">Save tab</Button>
+        {error && (
+          <div className="w-full flex justify-center items-center gap-1 bg-destructive/10 p-2 rounded-md">
+            <TriangleAlert
+              className="size-4 text-destructive"
+              aria-hidden="true"
+            />
+            <p className="text-sm text-destructive">{error}</p>
+          </div>
+        )}
+
+        {success && (
+          <div className="w-full flex justify-center items-center gap-1 bg-green-500/10 p-2 rounded-md">
+            <Check className="size-4 text-green-600" aria-hidden="true" />
+            <p className="text-sm text-green-600">{success}</p>
+          </div>
+        )}
+
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Spinner className="size-4" aria-hidden="true" />
+              Saving...
+            </>
+          ) : (
+            "Save tab"
+          )}
+        </Button>
       </form>
     </div>
   );
