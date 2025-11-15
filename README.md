@@ -31,7 +31,7 @@
 - **Self-Hostable**: Deploy on your own infrastructure
 - **Open Source**: Fully transparent codebase
 
-### Roadmap
+## Roadmap
 
 - [ ] A fresh new UI so that the app looks different from base shadcn styles and is a bit unique. **[ In progress ]**
 - [ ] Release `0.1.0` of the app. **[ In progress ]**
