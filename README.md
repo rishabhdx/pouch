@@ -1,38 +1,45 @@
-# Pouch - Privacy-First Bookmark Manager
+# Pouch
 
-A modern, privacy-first, open-source bookmark manager built with React, Next.js, and TypeScript. Pouch offers both a web application and browser extension for seamless bookmark management across all your devices.
+#### A modern, privacy-first bookmark manager for the web.
+
+<!-- A modern, privacy-first, open-source bookmark manager built with React, Next.js, and TypeScript. Pouch offers both a web application and browser extension for seamless bookmark management across all your devices. -->
 
 > **⚠️ Under Active Development**
-> This project is currently under active development. Features and APIs may change frequently. Use in production at your own risk.
+> This project is currently under active development. Features and APIs may change frequently.
 
-## ✨ Features
+## Key features
 
-### 🌐 Web Application
+### Web Application
 
-- **Modern Dashboard**: Clean, intuitive interface for managing bookmarks
-- **Collection Management**: Organize bookmarks into custom collections
-- **Advanced Search**: Powerful search functionality with filters
-- **Tag System**: Tag-based organization for better categorization
-- **Data Views**: Switch between table and grid views
-- **Responsive Design**: Works seamlessly across all devices
-- **Authentication**: Secure user authentication with social login support
+- **Modern Dashboard**: Clean, intuitive UI for managing bookmarks.
+- **Collection Management**: Organize bookmarks into custom collections.
+- **Advanced Search**: Powerful search functionality with filters.
+- **Tag System**: Tag-based organization for better categorization.
+- **Data Views**: Switch between table and grid views.
 
-### 🔧 Browser Extension
+### Browser Extension
 
-- **One-Click Saving**: Save bookmarks directly from any webpage
-- **Metadata Extraction**: Automatically captures page metadata and Open Graph data
-- **Collection Selection**: Choose collections while saving bookmarks
-- **Tag Management**: Add tags during the bookmark saving process
+- **One-Click Saving**: Save bookmarks directly from any webpage.
+- **Metadata Extraction**: Automatically captures page metadata and Open Graph data.
+- **Collection Selection**: Choose collections while saving bookmarks.
+- **Tag Management**: Add tags during the bookmark saving process.
 - **Cross-Browser Support**: Compatible with Chrome and Firefox
 
-### 🔒 Privacy & Security
+### Privacy & Security
 
 - **Privacy-First**: Your data stays private and secure
 - **Self-Hostable**: Deploy on your own infrastructure
 - **Open Source**: Fully transparent codebase
-- **Secure Authentication**: Built with better-auth for robust security
 
-### 🛠 Technical Features
+### Roadmap
+
+- [ ] A fresh new UI so that the app looks different from base shadcn styles and is a bit unique. **[ In progress ]**
+- [ ] Release `0.1.0` of the app. **[ In progress ]**
+- [ ] Ability to import exported list of saves from the Pocket app.
+- [ ] Ability to import bookmarks from browsers.
+- [ ] A mobile app to quickly manage saved bookmarks.
+
+<!-- ### Technical Features
 
 - **Modern Tech Stack**: Built with React, Next.js, TypeScript, and Tailwind CSS
 - **Database**: PostgreSQL with Drizzle ORM
@@ -104,24 +111,45 @@ pnpm build
 pnpm build:web
 pnpm build:api
 pnpm build:extension
-```
+``` -->
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── apps/
-│   ├── web/          # Next.js web application
-│   ├── api/          # API server
-│   └── extension/    # Browser extension
+│   ├── web/                  # Next.js web application
+│   ├── api/                  # API server
+│   └── extension/            # Browser extension
 ├── packages/
-│   ├── ui/           # Shared UI components
-│   ├── db/           # Database schema and utilities
-│   ├── auth/         # Authentication utilities
-│   ├── eslint-config/     # Shared ESLint configuration
-│   └── typescript-config/ # Shared TypeScript configuration
+│   ├── ui/                   # Shared UI components
+│   ├── db/                   # Database schema and utilities
+│   ├── auth/                 # Authentication utilities
+│   ├── eslint-config/        # Shared ESLint configuration
+│   └── typescript-config/    # Shared TypeScript configuration
 ```
 
-## 🧩 Browser Extension Development
+## Tech Stack
+
+- **Frontend**: React, Next.js, TypeScript, Tailwind CSS
+- **Backend**: Node.js, better-auth
+- **Database**: PostgreSQL, Drizzle ORM
+- **Extension**: WXT
+- **UI**: shadcn UI, Radix UI, Lucide Icons
+- **Build**: Turborepo, pnpm workspaces
+
+## Support
+
+If you have any questions or need help:
+
+- Open an [issue](https://github.com/rishabhdx/pouch/issues)
+- Start a [discussion](https://github.com/rishabhdx/pouch/discussions)
+- Check the [documentation](https://github.com/rishabhdx/pouch/wiki) **[ To be added soon ]**
+
+---
+
+**Star ⭐ this repository if you find it helpful!**
+
+<!-- ## 🧩 Browser Extension Development
 
 The browser extension is built with [WXT](https://wxt.dev/) and supports both Chrome and Firefox.
 
@@ -222,19 +250,9 @@ We welcome contributions! Please follow these steps:
 | `pnpm lint`       | Run ESLint on all packages    |
 | `pnpm type-check` | Run TypeScript type checking  |
 | `pnpm db:push`    | Push database schema          |
-| `pnpm db:studio`  | Open database studio          |
+| `pnpm db:studio`  | Open database studio          | -->
 
-## 🔧 Tech Stack
-
-- **Frontend**: React, Next.js, TypeScript, Tailwind CSS
-- **Backend**: Node.js, better-auth
-- **Database**: PostgreSQL, Drizzle ORM
-- **Extension**: WXT, TanStack Router
-- **UI**: Radix UI, Lucide Icons
-- **Build**: Turbo, pnpm workspaces
-- **Deployment**: Vercel-ready
-
-## 📝 License
+<!-- ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
@@ -244,16 +262,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Radix UI](https://www.radix-ui.com/) for accessible primitives
 - [WXT](https://wxt.dev/) for browser extension development
 - [Drizzle](https://orm.drizzle.team/) for the excellent ORM
-- [better-auth](https://www.better-auth.com/) for authentication
-
-## 📞 Support
-
-If you have any questions or need help:
-
-- Open an [issue](https://github.com/rishabhdx/pouch/issues)
-- Start a [discussion](https://github.com/rishabhdx/pouch/discussions)
-- Check the [documentation](https://github.com/rishabhdx/pouch/wiki)
-
----
-
-**Star ⭐ this repository if you find it helpful!**
+- [better-auth](https://www.better-auth.com/) for authentication -->
