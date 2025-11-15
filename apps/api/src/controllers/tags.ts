@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { db } from "@pouch/db";
 import { tags, type NewTag } from "@pouch/db/schema";
+import slugify from "slugify";
 
 export const getAllTags = async (req: Request, res: Response) => {
   try {
@@ -9,7 +10,7 @@ export const getAllTags = async (req: Request, res: Response) => {
       orderBy: (tags, { desc }) => [desc(tags.createdAt)]
     });
 
-    res.json({ tags: allTags });
+    res.status(200).json({ tags: allTags });
   } catch (error) {
     console.error("Error fetching tags:", error);
     res.status(500).json({ error: "Failed to fetch tags" });
@@ -17,27 +18,20 @@ export const getAllTags = async (req: Request, res: Response) => {
 };
 
 export const createTag = async (req: Request, res: Response) => {
-  const { name, description }: NewTag = req.body;
+  const { name }: NewTag = req.body;
 
   if (!name) {
-    return res.status(400).json({ error: "Collection name is required" });
+    return res.status(400).json({ error: "Tag name is required" });
   }
 
   try {
-    const newTag = await db
-      .insert(tags)
-      .values({
-        name: name,
-        userId: req.user!.id,
-        description: description
-      })
-      .returning({
-        name: tags.name,
-        id: tags.id,
-        description: tags.description
-      });
+    await db.insert(tags).values({
+      name: name,
+      userId: req.user!.id,
+      slug: slugify(name, { lower: true, strict: true })
+    });
 
-    res.status(201).json({ newTag });
+    res.status(201).json({ message: "New tag created successfully" });
   } catch (error) {
     console.error("Error creating tags:", error);
     res.status(500).json({ error: "Failed to create tags" });

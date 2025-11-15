@@ -180,7 +180,9 @@ export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    isFavorite: false
+    isFavorite: false,
+    domain: false,
+    url: false
   });
   const [pagination, setPagination] = useState({
     pageIndex: 0, // initial page index
@@ -294,10 +296,10 @@ export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
   }
 
   return (
-    <div className="w-full">
+    <div className="max-w-full overflow-x-hidden">
       <Tabs defaultValue={layoutView} onValueChange={setLayoutView}>
-        <div className="w-full flex items-center justify-between py-4">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between py-4">
+          <div className="flex items-center gap-2 w-full">
             <TabsList>
               <TabsTrigger value="grid" aria-label="Grid layout">
                 <LayoutGrid className="size-4" aria-hidden="true" />

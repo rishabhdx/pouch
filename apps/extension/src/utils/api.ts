@@ -9,13 +9,9 @@ export async function fetchCollections() {
 }
 
 export async function fetchTags() {
-  try {
-    const { data } = await axios.get(`${import.meta.env.WXT_API_URL}/tags/all`);
+  const response = await axios.get(`${import.meta.env.WXT_API_URL}/tags/all`);
 
-    return data;
-  } catch (error) {
-    console.error("Error fetching tags:", error);
-  }
+  return response.data;
 }
 
 export async function createCollection(name: string) {

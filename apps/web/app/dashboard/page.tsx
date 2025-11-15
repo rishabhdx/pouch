@@ -11,5 +11,5 @@ export default async function DashboardPage() {
     redirect("/");
   }
 
-  return <div className="h-full w-full py-4 px-4 lg:px-6">Dashboard</div>;
+  return <div className="h-full py-4 px-4 lg:px-6">Dashboard</div>;
 }

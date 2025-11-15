@@ -1,11 +1,14 @@
+import { useStore } from "@/lib/store";
 import { buttonVariants } from "@pouch/ui/components/button";
 import { Checkbox } from "@pouch/ui/components/checkbox";
 import { Input } from "@pouch/ui/components/input";
 import { Label } from "@pouch/ui/components/label";
 import { cn } from "@pouch/ui/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
-import { useId } from "react";
+import { ArrowLeft, LoaderCircle, TriangleAlert } from "lucide-react";
+import { useEffect, useId, useState } from "react";
+import { fetchTags } from "@/utils/api";
 
 export const Route = createFileRoute("/tags")({
   component: Tags,
@@ -24,6 +27,71 @@ export const Route = createFileRoute("/tags")({
 
 function Tags() {
   const id = useId();
+
+  const tags = useStore(store => store.tags);
+  const setTags = useStore(store => store.setTags);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredTags, setFilteredTags] = useState<string[]>([]);
+
+  const { data, isLoading, error } = useQuery<{
+    tags: string[];
+  }>({
+    queryKey: ["tags"],
+    queryFn: fetchTags,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
+  });
+
+  console.log("Fetched tags data:", data);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchTerm, data]);
+
+  const handleSearch = () => {
+    if (data) {
+      const filtered = data.tags.filter(tag =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredTags(filtered);
+    }
+  };
+
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <div className="w-sm h-96 overflow-y-auto bg-background text-foreground border border-border rounded-md p-4 flex flex-col items-center justify-center space-y-2">
+        <LoaderCircle
+          className="size-6 animate-spin text-muted-foreground"
+          aria-hidden="true"
+        />
+        <p className="text-base font-medium text-center text-muted-foreground">
+          Please wait while we're loading your tags data...
+        </p>
+      </div>
+    );
+  }
+
+  // Handle error state
+  if (error) {
+    return (
+      <div className="w-sm h-96 overflow-y-auto bg-background border text-foreground border-border rounded-md p-4 flex flex-col items-center justify-center space-y-2">
+        <TriangleAlert className="size-6 text-destructive" aria-hidden="true" />
+        <p className="text-base font-medium text-center text-destructive">
+          We're facing issues loading your tags data. Please try again later.
+        </p>
+        <Link
+          to="/"
+          className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+        >
+          <ArrowLeft className="size-4" aria-hidden="true" />
+          Home
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="w-sm h-96 overflow-y-auto bg-background text-foreground border border-border rounded-md p-4 flex flex-col space-y-4">

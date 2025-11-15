@@ -26,7 +26,7 @@ export function BookmarksDataListView({
 }) {
   return (
     <div>
-      <div className="overflow-hidden rounded-md border">
+      <div className="rounded-md border border-border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
@@ -54,7 +54,14 @@ export function BookmarksDataListView({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className={
+                        cell.column.id === "title" || cell.column.id === "url"
+                          ? "truncate block max-w-sm"
+                          : ""
+                      }
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

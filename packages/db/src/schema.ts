@@ -194,23 +194,27 @@ export const bookmarksToTags = pgTable(
   ]
 );
 
-export const tags = pgTable("tag", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+export const tags = pgTable(
+  "tag",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
 
-  name: varchar("name", { length: 256 }).notNull(),
-  description: text("description"),
+    name: varchar("name", { length: 256 }).notNull(),
+    slug: varchar("slug", { length: 256 }).notNull(),
 
-  // Timestamps
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .notNull()
-});
+    // Timestamps
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  t => [unique("uq_tags_userId_slug").on(t.userId, t.slug)]
+);
 
 export const collectionRelations = relations(collections, ({ many, one }) => ({
   user: one(user, {
