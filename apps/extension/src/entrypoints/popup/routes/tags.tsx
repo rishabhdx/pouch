@@ -1,14 +1,15 @@
-import { useStore } from "@/lib/store";
-import { buttonVariants } from "@pouch/ui/components/button";
+import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { StoreTagType, useStore } from "@/lib/store";
+import { Button, buttonVariants } from "@pouch/ui/components/button";
 import { Checkbox } from "@pouch/ui/components/checkbox";
 import { Input } from "@pouch/ui/components/input";
 import { Label } from "@pouch/ui/components/label";
 import { cn } from "@pouch/ui/lib/utils";
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { fetchTags, createTag } from "@/utils/api";
 import { ArrowLeft, LoaderCircle, TriangleAlert } from "lucide-react";
-import { useEffect, useId, useState } from "react";
-import { fetchTags } from "@/utils/api";
 
 export const Route = createFileRoute("/tags")({
   component: Tags,
@@ -26,37 +27,70 @@ export const Route = createFileRoute("/tags")({
 });
 
 function Tags() {
-  const id = useId();
+  const queryClient = useQueryClient();
 
   const tags = useStore(store => store.tags);
   const setTags = useStore(store => store.setTags);
 
+  // const [enteredTags, setEnteredTags] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredTags, setFilteredTags] = useState<string[]>([]);
+  const [filteredTags, setFilteredTags] = useState<StoreTagType[]>([]);
 
   const { data, isLoading, error } = useQuery<{
-    tags: string[];
+    tags: StoreTagType[];
   }>({
-    queryKey: ["tags"],
+    queryKey: ["tags", "fetchTags"],
     queryFn: fetchTags,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false
   });
 
+  const mutation = useMutation({
+    mutationFn: createTag,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["tags"] });
+    }
+  });
+
   console.log("Fetched tags data:", data);
+  console.log("Tags from store:", tags);
+  console.log("Filtered tags:", filteredTags);
+
+  useEffect(() => {
+    if (data) {
+      // setTags(data.tags);
+      setFilteredTags(data.tags);
+    }
+  }, [data]);
 
   useEffect(() => {
     handleSearch();
-  }, [searchTerm, data]);
+  }, [searchTerm]);
 
   const handleSearch = () => {
     if (data) {
-      const filtered = data.tags.filter(tag =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredTags(filtered);
+      if (searchTerm.trim() !== "") {
+        const filtered = data.tags.filter(tag =>
+          tag.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredTags(filtered);
+      } else {
+        setFilteredTags(data.tags);
+      }
+    } else {
+      setFilteredTags([]);
     }
+  };
+
+  const handleCreateTag = () => {
+    if (searchTerm.trim() === "") return;
+
+    const newTag = searchTerm.trim();
+
+    mutation.mutate(newTag);
+    setSearchTerm("");
   };
 
   // Handle loading state
@@ -94,24 +128,38 @@ function Tags() {
   }
 
   return (
-    <div className="w-sm h-96 overflow-y-auto bg-background text-foreground border border-border rounded-md p-4 flex flex-col space-y-4">
-      <div className="w-full">
+    <div className="w-sm h-96 overflow-hidden bg-background text-foreground border border-border rounded-md p-4 flex flex-col space-y-4">
+      <div className="w-full flex items-center justify-between">
         <Link
           to="/"
           className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
-          // className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
           Home
         </Link>
+        {/* <Link
+          className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+          to="/new-tag"
+        >
+          Create new tag
+        </Link> */}
       </div>
       {/* <Separator className="w-full" /> */}
-      <Input placeholder="Search tags..." className="w-full shrink-0" />
-      {/* <Button variant="ghost" className="w-full justify-start shrink-0">
-        + Create new collection
-      </Button> */}
+      <Input
+        value={searchTerm}
+        onChange={e => setSearchTerm(e.target.value)}
+        placeholder="Search tags..."
+        className="w-full shrink-0"
+      />
       {/* <Separator className="w-full" /> */}
-      <div className="flex-1 pt-0">
+      <div
+        className={cn(
+          "flex-1 pt-0 overflow-y-auto max-h-full",
+          "[&::-webkit-scrollbar]:w-1.5",
+          "[&::-webkit-scrollbar-track]:bg-background [&::-webkit-scrollbar-track]:rounded-full",
+          "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/25 hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/50"
+        )}
+      >
         <div className="flex flex-col space-y-2">
           <div className="flex items-center gap-2">
             {/* <Hash className="size-3 text-muted-foreground" aria-hidden="true" /> */}
@@ -119,43 +167,79 @@ function Tags() {
               Select from exising tags
             </p>
           </div>
-          {/* {Array.from({ length: 20 }).map((_, index) => (
-          <div key={index} className="mb-2 last:mb-0">
-            <Button variant="ghost" className="w-full justify-start">
-              Collection {index + 1}
-            </Button>
-          </div>
-        ))} */}
 
-          {/* <RadioGroup defaultValue="comfortable">
-          <div className="flex items-center gap-3">
-            <RadioGroupItem value="default" id="r1" />
-            <Label htmlFor="r1">Default</Label>
-          </div>
-          <div className="flex items-center gap-3">
-            <RadioGroupItem value="comfortable" id="r2" />
-            <Label htmlFor="r2">Comfortable</Label>
-          </div>
-          <div className="flex items-center gap-3">
-            <RadioGroupItem value="compact" id="r3" />
-            <Label htmlFor="r3">Compact</Label>
-          </div>
-        </RadioGroup> */}
+          {filteredTags.length === 0 && searchTerm.trim() !== "" && (
+            <div className="flex flex-col items-center justify-center gap-1 bg-background/50 p-4 rounded-md border border-dashed border-border">
+              <p className="text-sm text-muted-foreground text-center">
+                No results found.
+              </p>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-fit mt-2"
+                onClick={handleCreateTag}
+              >
+                Create tag "{searchTerm}"
+              </Button>
+            </div>
+          )}
 
-          <div className="grid gap-0">
-            <div className="flex items-center gap-2 py-2">
-              <Checkbox id={`${id}-1`} />
-              <Label htmlFor={`${id}-1`}>React</Label>
+          {filteredTags.length === 0 && searchTerm.trim() === "" && (
+            <div className="grid gap-0 bg-background/50 p-4 rounded-md border border-dashed border-border">
+              <p className="text-sm text-muted-foreground text-center">
+                No tags found. Try adjusting your search or create new tags.
+              </p>
             </div>
-            <div className="flex items-center gap-2 py-2">
-              <Checkbox id={`${id}-2`} />
-              <Label htmlFor={`${id}-2`}>Next.js</Label>
+          )}
+
+          {filteredTags.length > 0 && (
+            <div className="grid gap-0">
+              {filteredTags.map(tag => (
+                <div key={tag.id} className="flex items-center gap-2 py-2">
+                  <Checkbox
+                    id={`${tag.id}-${tag.slug}`}
+                    checked={tags.some(t => t.id === tag.id)}
+                    onCheckedChange={checked => {
+                      if (checked) {
+                        setTags([...tags, tag]);
+                      } else {
+                        setTags(tags.filter(t => t.id !== tag.id));
+                      }
+                    }}
+                    // value={tag.id}
+                    // onChange={e => console.log(e.target.value)}
+                  />
+                  <Label htmlFor={`${tag.id}-${tag.slug}`}>{tag.name}</Label>
+                </div>
+              ))}
             </div>
-            <div className="flex items-center gap-2 py-2">
-              <Checkbox id={`${id}-3`} />
-              <Label htmlFor={`${id}-3`}>Astro</Label>
+          )}
+
+          {/* {!filteredTags || filteredTags.length === 0 ? (
+            <div className="grid gap-0 bg-background/50 p-4 rounded-md border border-dashed border-border">
+              <p className="text-sm text-muted-foreground text-center">
+                No tags found. Try adjusting your search or create new tags.
+              </p>
             </div>
-          </div>
+          ) : (
+            <div className="grid gap-0">
+              {filteredTags.map(tag => (
+                <div key={tag} className="flex items-center gap-2 py-2">
+                  <Checkbox id={`${id}-${tag}`} />
+                  <Label htmlFor={`${id}-${tag}`}>{tag}</Label>
+                </div>
+              ))}
+            </div>
+          )} */}
+
+          {/* <div className="grid gap-0">
+            {filteredTags.map(tag => (
+              <div key={tag} className="flex items-center gap-2 py-2">
+                <Checkbox id={`${id}-${tag}`} />
+                <Label htmlFor={`${id}-${tag}`}>{tag}</Label>
+              </div>
+            ))}
+          </div> */}
 
           {/* <div className="relative flex w-full items-start gap-2 rounded-lg border border-input p-4 shadow-sm shadow-black/5 has-[[data-state=checked]]:border-ring">
               <RadioGroupItem

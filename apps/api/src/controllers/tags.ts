@@ -7,7 +7,8 @@ export const getAllTags = async (req: Request, res: Response) => {
   try {
     const allTags = await db.query.tags.findMany({
       where: (tags, { eq }) => eq(tags.userId, req.user!.id),
-      orderBy: (tags, { desc }) => [desc(tags.createdAt)]
+      orderBy: (tags, { desc }) => [desc(tags.createdAt)],
+      columns: { id: true, name: true, slug: true }
     });
 
     res.status(200).json({ tags: allTags });

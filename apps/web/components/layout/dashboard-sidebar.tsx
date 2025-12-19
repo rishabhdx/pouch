@@ -115,7 +115,7 @@ export function DashboardSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <Link href="/dashboard" className="flex items-center gap-2">
                 <span className="text-base font-semibold">Pouch</span>

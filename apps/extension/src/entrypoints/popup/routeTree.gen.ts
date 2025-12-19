@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as TagsRouteImport } from './routes/tags'
+import { Route as NewTagRouteImport } from './routes/new-tag'
 import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -22,6 +23,11 @@ const WelcomeRoute = WelcomeRouteImport.update({
 const TagsRoute = TagsRouteImport.update({
   id: '/tags',
   path: '/tags',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewTagRoute = NewTagRouteImport.update({
+  id: '/new-tag',
+  path: '/new-tag',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CollectionsRoute = CollectionsRouteImport.update({
@@ -38,12 +44,14 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/collections': typeof CollectionsRoute
+  '/new-tag': typeof NewTagRoute
   '/tags': typeof TagsRoute
   '/welcome': typeof WelcomeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/collections': typeof CollectionsRoute
+  '/new-tag': typeof NewTagRoute
   '/tags': typeof TagsRoute
   '/welcome': typeof WelcomeRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/collections': typeof CollectionsRoute
+  '/new-tag': typeof NewTagRoute
   '/tags': typeof TagsRoute
   '/welcome': typeof WelcomeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/collections' | '/tags' | '/welcome'
+  fullPaths: '/' | '/collections' | '/new-tag' | '/tags' | '/welcome'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/collections' | '/tags' | '/welcome'
-  id: '__root__' | '/' | '/collections' | '/tags' | '/welcome'
+  to: '/' | '/collections' | '/new-tag' | '/tags' | '/welcome'
+  id: '__root__' | '/' | '/collections' | '/new-tag' | '/tags' | '/welcome'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CollectionsRoute: typeof CollectionsRoute
+  NewTagRoute: typeof NewTagRoute
   TagsRoute: typeof TagsRoute
   WelcomeRoute: typeof WelcomeRoute
 }
@@ -83,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/tags'
       fullPath: '/tags'
       preLoaderRoute: typeof TagsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/new-tag': {
+      id: '/new-tag'
+      path: '/new-tag'
+      fullPath: '/new-tag'
+      preLoaderRoute: typeof NewTagRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/collections': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CollectionsRoute: CollectionsRoute,
+  NewTagRoute: NewTagRoute,
   TagsRoute: TagsRoute,
   WelcomeRoute: WelcomeRoute,
 }

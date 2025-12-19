@@ -12,7 +12,7 @@ interface CreateBookmarkBody {
   title: string;
   url: string;
   collectionId: string;
-  tags: string[];
+  tags: { id: string; name: string; slug: string }[];
   metadata: {
     title: string;
     description: string;
@@ -42,39 +42,39 @@ export const createBookmark = async (req: Request, res: Response) => {
   }
 
   try {
-    const tagSlugs = body.tags.map(tag =>
-      slugify(tag, { lower: true, strict: true })
-    );
+    // const tagSlugs = body.tags.map(tag =>
+    //   slugify(tag, { lower: true, strict: true })
+    // );
 
     // Find existing tags for this user
-    const existingTags = await db.query.tags.findMany({
-      where: (tags, { and, eq, inArray }) =>
-        and(eq(tags.userId, req.user!.id), inArray(tags.slug, tagSlugs))
-    });
+    // const existingTags = await db.query.tags.findMany({
+    //   where: (tags, { and, eq, inArray }) =>
+    //     and(eq(tags.userId, req.user!.id), inArray(tags.slug, tagSlugs))
+    // });
 
-    const existingSlugs = new Set(existingTags.map(tag => tag.slug));
+    // const existingSlugs = new Set(existingTags.map(tag => tag.slug));
 
     // Create only new tags that don't exist
-    const tagsToCreate = body.tags.filter(
-      tag => !existingSlugs.has(slugify(tag, { lower: true, strict: true }))
-    );
+    // const tagsToCreate = body.tags.filter(
+    //   tag => !existingSlugs.has(slugify(tag, { lower: true, strict: true }))
+    // );
 
-    const newTags =
-      tagsToCreate.length > 0
-        ? await db
-            .insert(tags)
-            .values(
-              tagsToCreate.map(tag => ({
-                userId: req.user!.id,
-                name: tag,
-                slug: slugify(tag, { lower: true, strict: true })
-              }))
-            )
-            .returning()
-        : [];
+    // const newTags =
+    //   tagsToCreate.length > 0
+    //     ? await db
+    //         .insert(tags)
+    //         .values(
+    //           tagsToCreate.map(tag => ({
+    //             userId: req.user!.id,
+    //             name: tag,
+    //             slug: slugify(tag, { lower: true, strict: true })
+    //           }))
+    //         )
+    //         .returning()
+    //     : [];
 
     // Combine existing and new tags
-    const allTags = [...existingTags, ...newTags];
+    // const allTags = [...existingTags, ...newTags];
 
     const newBookmark = await db
       .insert(bookmarks)
@@ -99,13 +99,13 @@ export const createBookmark = async (req: Request, res: Response) => {
       .returning();
 
     // Link tags to bookmark if any tags exist
-    if (allTags.length > 0 && newBookmark.length > 0) {
+    if (body.tags.length > 0) {
       const b = newBookmark[0];
 
       if (!b) return;
 
       await db.insert(bookmarksToTags).values(
-        allTags.map(tag => ({
+        body.tags.map(tag => ({
           bookmarkId: b.id,
           tagId: tag.id
         }))

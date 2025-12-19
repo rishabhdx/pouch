@@ -16,7 +16,7 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-      <DashboardSidebar variant="sidebar" />
+      <DashboardSidebar variant="inset" />
       <SidebarInset>
         <DashboardSidebarHeader />
         <div className="flex flex-col h-full overflow-hidden ">

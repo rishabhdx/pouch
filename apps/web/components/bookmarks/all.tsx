@@ -17,8 +17,10 @@ export async function AllBookmarks({ userId }: AllBookmarksProps) {
       where: (bookmark, { and, eq }) =>
         and(eq(bookmark.userId, userId), eq(bookmark.isArchived, false)),
       orderBy: (bookmark, { desc }) => [desc(bookmark.createdAt)],
-      with: { collection: true }
+      with: { collection: true, bookmarksToTags: { with: { tag: true } } }
     });
+
+  console.log("All bookmarks:", allBookmarks);
 
   return <BookmarksView data={allBookmarks} />;
 }

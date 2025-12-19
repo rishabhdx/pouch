@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { type Tag, type Collection } from "@pouch/db/schema";
 
 export interface StoreCollectionType {
   name: string;
@@ -6,10 +7,13 @@ export interface StoreCollectionType {
   id: string;
   description: string | null;
 }
-export interface StoreTagType {
-  name: string;
-  id: string;
-}
+// export interface StoreTagType {
+//   name: string;
+//   id: string;
+//   asd: Omit<Tag, "userId">;
+// }
+
+export type StoreTagType = Pick<Tag, "id" | "name" | "slug">;
 
 interface StoreState {
   title: string;

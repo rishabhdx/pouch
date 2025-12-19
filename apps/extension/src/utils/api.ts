@@ -2,16 +2,16 @@ import axios from "axios";
 import type { Metadata } from "@/types";
 
 export async function fetchCollections() {
-  const response = await axios.get(
+  const { data } = await axios.get(
     `${import.meta.env.WXT_API_URL}/collections/all?includeAll=true`
   );
-  return response.data;
+  return data;
 }
 
 export async function fetchTags() {
-  const response = await axios.get(`${import.meta.env.WXT_API_URL}/tags/all`);
+  const { data } = await axios.get(`${import.meta.env.WXT_API_URL}/tags/all`);
 
-  return response.data;
+  return data;
 }
 
 export async function createCollection(name: string) {
@@ -28,16 +28,12 @@ export async function createCollection(name: string) {
 }
 
 export async function createTag(name: string) {
-  try {
-    const { data } = await axios.post(
-      `${import.meta.env.WXT_API_URL}/tags/create`,
-      { name }
-    );
+  const { data } = await axios.post(
+    `${import.meta.env.WXT_API_URL}/tags/create`,
+    { name }
+  );
 
-    return data;
-  } catch (error) {
-    console.error("Error creating tag:", error);
-  }
+  return data;
 }
 
 export async function saveBookmark(props: {

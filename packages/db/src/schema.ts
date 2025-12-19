@@ -278,4 +278,7 @@ export type NewBookmarkTag = typeof bookmarksToTags.$inferInsert;
 
 export type BookmarkWithCollection = typeof bookmarks.$inferSelect & {
   collection: typeof collections.$inferSelect | null;
+  bookmarksToTags: (typeof bookmarksToTags.$inferSelect & {
+    tag: typeof tags.$inferSelect;
+  })[];
 };

@@ -29,11 +29,8 @@ export async function CollectionBookmarks({
         eq(bookmark.collectionId, collection.id)
       ),
     orderBy: (bookmark, { desc }) => [desc(bookmark.createdAt)],
-    with: {
-      collection: true
-    }
+    with: { collection: true, bookmarksToTags: { with: { tag: true } } }
   });
-  // type BookmarkWithCollection = (typeof allBookmarks)[number];
 
   return <BookmarksView data={allBookmarks} />;
 }

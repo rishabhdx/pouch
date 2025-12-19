@@ -101,7 +101,7 @@ function Index() {
         url: tab.url!,
         tabId: tab.id,
         collectionId: collection.id,
-        tags: tags.map(tag => tag.id)
+        tags: tags
       });
     } catch (error) {
       console.error("errors and errors:", error);
