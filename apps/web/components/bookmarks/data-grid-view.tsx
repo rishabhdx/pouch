@@ -6,8 +6,6 @@ import { type BookmarkWithCollection } from "@pouch/db/schema";
 
 import { GridViewItem } from "@/components/bookmarks/data-grid-view-item";
 
-// https://wgg522pwivhvi5gqsn675gth3q0otdja.lambda-url.us-east-1.on.aws/686f72
-
 export function BookmarksDataGridView({
   table
 }: {

@@ -12,7 +12,8 @@ import {
   TableRow
 } from "@pouch/ui/components/table";
 import { Button } from "@pouch/ui/components/button";
-import { Bookmark, BookmarkWithCollection } from "@pouch/db/schema";
+import { type BookmarkWithCollection } from "@pouch/db/schema";
+import { ListViewItem } from "@/components/bookmarks/data-list-view-item";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -24,6 +25,38 @@ export function BookmarksDataListView({
 }: {
   table: TanstackTable<BookmarkWithCollection>;
 }) {
+  return (
+    <div>
+      <div className="w-full h-full flex flex-col gap-6">
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map(row => {
+            return <ListViewItem key={row.id} row={row} />;
+          })
+        ) : (
+          <div>No results</div>
+        )}
+      </div>
+      <div className="flex items-center justify-center space-x-2 py-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+      </div>
+    </div>
+  );
+
   return (
     <div>
       <div className="rounded-md border border-border">

@@ -16,7 +16,7 @@ export default async function AllLinksPage() {
   }
 
   return (
-    <div className="h-full w-full py-4 px-4 lg:px-6">
+    <div className="h-full w-full py-4 px-4 lg:px-6 overflow-hidden flex flex-col gap-4">
       <h2 className="inline-flex items-center gap-2 text-2xl font-semibold">
         All Bookmarks
       </h2>

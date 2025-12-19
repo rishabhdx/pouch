@@ -14,7 +14,6 @@ import {
   Archive,
   Dot,
   Folder,
-  FolderOpen,
   FolderSymlink,
   Heart,
   MailCheck,
@@ -38,7 +37,6 @@ export const GridViewItem = ({ row }: { row: Row<BookmarkWithCollection> }) => {
   const [showArchiveDialog, setShowArchiveDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  console.log("I rendered for ", row.original.title);
   const {
     title,
     url,
@@ -52,8 +50,6 @@ export const GridViewItem = ({ row }: { row: Row<BookmarkWithCollection> }) => {
     isArchived,
     createdAt
   } = row.original;
-
-  console.log({ collection });
 
   return (
     <div className="w-full flex flex-col gap-2 overflow-hidden">

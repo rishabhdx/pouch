@@ -188,7 +188,7 @@ export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
     pageIndex: 0, // initial page index
     pageSize: 12 // default page size
   });
-  const [layoutView, setLayoutView] = useState<string>("grid");
+  const [layoutView, setLayoutView] = useState<string>("list");
 
   const [searchQuery, setSearchQuery] = useQueryState(
     "q",
@@ -296,15 +296,27 @@ export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
   }
 
   return (
-    <div className="max-w-full overflow-x-hidden">
-      <Tabs defaultValue={layoutView} onValueChange={setLayoutView}>
+    <div className="max-w-full max-h-full overflow-hidden">
+      <Tabs
+        defaultValue={layoutView}
+        onValueChange={setLayoutView}
+        className="h-full"
+      >
         <div className="flex items-center justify-between py-4">
           <div className="flex items-center gap-2 w-full">
-            <TabsList>
-              <TabsTrigger value="grid" aria-label="Grid layout">
+            <TabsList className="bg-background border border-input p-px">
+              <TabsTrigger
+                value="grid"
+                aria-label="Grid layout"
+                className="data-[state=active]:bg-muted dark:data-[state=active]:bg-input dark:data-[state=active]:border-transparent h-full"
+              >
                 <LayoutGrid className="size-4" aria-hidden="true" />
               </TabsTrigger>
-              <TabsTrigger value="list" aria-label="List layout">
+              <TabsTrigger
+                value="list"
+                aria-label="List layout"
+                className="data-[state=active]:bg-muted dark:data-[state=active]:bg-input dark:data-[state=active]:border-transparent h-full"
+              >
                 <Columns3 className="size-4" aria-hidden="true" />
               </TabsTrigger>
             </TabsList>
@@ -328,110 +340,10 @@ export function BookmarksView({ data, preappliedFilters }: BookmarksViewProps) {
             />
           </div>
         </div>
-        <TabsContent value="grid">
-          {/* <div className="max-w-sm bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-100 group">
-            <div className="relative">
-              <img
-                className="w-full h-48 object-cover object-center"
-                src="https://images.unsplash.com/photo-1499750310159-5254f3615481?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                alt="Article Cover"
-              />
-
-              <div className="absolute top-3 left-3">
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/90 text-indigo-800 shadow-sm backdrop-blur-sm">
-                  <svg
-                    className="mr-1.5 h-2 w-2 text-indigo-400"
-                    fill="currentColor"
-                    viewBox="0 0 8 8"
-                  >
-                    <circle cx="4" cy="4" r="3" />
-                  </svg>
-                  Tech Trends
-                </span>
-              </div>
-            </div>
-
-            <div className="p-5">
-              <a
-                href="#"
-                className="block mt-1 text-lg leading-tight font-semibold text-gray-900 hover:text-indigo-600 transition-colors"
-              >
-                The Future of AI in Modern Design
-              </a>
-
-              <p className="mt-2 text-slate-500 text-sm line-clamp-3">
-                Explore how artificial intelligence is reshaping the way we
-                approach user interface patterns and the ethical implications of
-                automated content generation.
-              </p>
-
-              <div className="mt-4 border-t border-gray-100 pt-4 flex items-center justify-between">
-                <button className="flex items-center gap-2 text-sm text-gray-500 hover:text-red-500 transition-colors group/fav">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 group-hover/fav:fill-current group-hover/fav:stroke-none transition-all"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                  <span className="text-xs font-medium">Favorite</span>
-                </button>
-
-                <div className="relative">
-                  <button className="p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    <span className="sr-only">Open options</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                      />
-                    </svg>
-                  </button>
-
-                  <div className="hidden absolute right-0 bottom-full mb-2 w-36 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                    <div className="py-1">
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Edit
-                      </a>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Archive
-                      </a>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
-                      >
-                        Delete
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> */}
+        <TabsContent value="grid" className="h-full overflow-y-auto pr-4">
           <BookmarksDataGridView table={table} />
         </TabsContent>
-        <TabsContent value="list">
+        <TabsContent value="list" className="h-full overflow-y-auto pr-4">
           <BookmarksDataListView table={table} />
         </TabsContent>
       </Tabs>

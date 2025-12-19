@@ -26,8 +26,6 @@ export const TagBadge = memo(function TagBadgeBase({
 }) {
   const colourClass = useMemo(() => getColourClass(), []);
 
-  console.log("Colour class:", colourClass);
-
   return (
     <span
       data-slot="badge"

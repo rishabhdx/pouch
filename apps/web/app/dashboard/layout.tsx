@@ -20,7 +20,7 @@ export default function DashboardLayout({
       <SidebarInset>
         <DashboardSidebarHeader />
         <div className="flex flex-col h-full overflow-hidden ">
-          <main className="h-[calc(100svh-50px)] md:h-[calc(100svh-48px-18px)] scroll-bar-hidden overflow-y-scroll overflow-x-hidden">
+          <main className="h-[calc(100svh-50px)] md:h-[calc(100svh-48px-18px)] scroll-bar-hidden overflow-y-hidden overflow-x-hidden">
             {children}
           </main>
         </div>

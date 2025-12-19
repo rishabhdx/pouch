@@ -294,6 +294,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* font-family: "Google Sans Flex", sans-serif; */
     font-family: var(--font-geist-sans), sans-serif;
     /* font-family: var(--font-geist-mono), monospace; */
   }
