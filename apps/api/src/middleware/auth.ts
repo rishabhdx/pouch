@@ -1,7 +1,6 @@
 import { auth, fromNodeHeaders } from "@pouch/auth/server";
 import type { Request, Response, NextFunction } from "express";
 import type { Session, User } from "@pouch/auth/types";
-import { getHeaders } from "../utils/get-headers";
 
 declare module "express" {
   interface Request {
