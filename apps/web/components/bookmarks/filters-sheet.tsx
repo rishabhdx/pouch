@@ -23,7 +23,7 @@ import { useSearchParams } from "next/navigation";
 import { type BookmarkWithCollection } from "@pouch/db/schema";
 
 interface FilterSheetProps {
-  table: Table<BookmarkWithCollection>;
+  table?: Table<BookmarkWithCollection>;
   favorite: boolean | null;
   setFavorite: (value: boolean | null) => void;
   archived: boolean | null;

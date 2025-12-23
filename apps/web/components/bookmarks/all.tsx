@@ -1,6 +1,7 @@
 import { db } from "@pouch/db";
 import { BookmarkWithCollection } from "@pouch/db/schema";
 import { BookmarksView } from "@/components/bookmarks/main-view";
+import { MainView } from "@/components/bookmarks-new/main-view";
 
 interface AllBookmarksProps {
   userId: string;
@@ -20,7 +21,9 @@ export async function AllBookmarks({ userId }: AllBookmarksProps) {
       with: { collection: true, bookmarksToTags: { with: { tag: true } } }
     });
 
-  console.log("All bookmarks:", allBookmarks);
+  // console.log("All bookmarks:", allBookmarks);
 
-  return <BookmarksView data={allBookmarks} />;
+  // return <BookmarksView data={allBookmarks} />;
+
+  return <MainView data={allBookmarks} />;
 }

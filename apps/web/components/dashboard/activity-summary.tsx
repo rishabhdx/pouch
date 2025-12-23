@@ -1,110 +1,96 @@
+import { count, eq, and, gt } from "drizzle-orm";
+import { subDays } from "date-fns";
+
+import { db } from "@pouch/db";
+import { bookmarks, tags, collections } from "@pouch/db/schema";
 import { Badge } from "@pouch/ui/components/badge";
 import { Card } from "@pouch/ui/components/card";
-import { Calendar, Eye, Star } from "lucide-react";
+import { Bookmark, FolderOpen, Hash } from "lucide-react";
 
-export function ActivitySummary() {
+export async function ActivitySummary({ userId }: { userId: string }) {
+  const bookmarksResult = await db
+    .select({ count: count() })
+    .from(bookmarks)
+    .where(
+      and(
+        eq(bookmarks.userId, userId),
+        gt(bookmarks.createdAt, subDays(new Date(), 7))
+      )
+    );
+
+  const collectionsResult = await db
+    .select({ count: count() })
+    .from(collections)
+    .where(
+      and(
+        eq(collections.userId, userId),
+        gt(collections.createdAt, subDays(new Date(), 7))
+      )
+    );
+
+  const tagsResult = await db
+    .select({ count: count() })
+    .from(tags)
+    .where(
+      and(eq(tags.userId, userId), gt(tags.createdAt, subDays(new Date(), 7)))
+    );
+
+  const numberOfBookmarks = bookmarksResult[0]?.count || 0;
+  const numberOfCollections = collectionsResult[0]?.count || 0;
+  const numberOfTags = tagsResult[0]?.count || 0;
+
   return (
-    <div>
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-4">Activity Summary</h3>
-        <Card className="p-4">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
-                  <Calendar className="h-5 w-5 text-green-500" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">This Week</p>
-                  <p className="text-xs text-muted-foreground">
-                    15 bookmarks saved
-                  </p>
-                </div>
-              </div>
-            </div>
+    <div className="flex flex-col gap-4">
+      <div className="flex w-full items-center justify-between">
+        <h3 className="text-xl font-semibold">Activity Summary</h3>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
-                  <Eye className="h-5 w-5 text-blue-500" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Last Read</p>
-                  <p className="text-xs text-muted-foreground">2 hours ago</p>
-                </div>
+        <span className="text-muted-foreground text-sm font-medium">
+          Last 7 days
+        </span>
+      </div>
+      <Card className="p-4">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-fuchsia-500/10">
+                <Bookmark className="h-5 w-5 text-fuchsia-500" />
               </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10">
-                  <Star className="h-5 w-5 text-amber-500" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">New Favorites</p>
-                  <p className="text-xs text-muted-foreground">8 this month</p>
-                </div>
+              <div className="flex flex-col gap-0.5">
+                <p className="text-xs text-muted-foreground">Bookmarks</p>
+                <p className="text-sm font-medium">
+                  {numberOfBookmarks} new added.
+                </p>
               </div>
             </div>
           </div>
-        </Card>
-      </div>
 
-      <div>
-        <h3 className="text-xl font-semibold mb-4">Popular Tags</h3>
-        <Card className="p-4">
-          <div className="flex flex-wrap gap-2">
-            <Badge
-              variant="secondary"
-              className="cursor-pointer hover:bg-secondary/80"
-            >
-              Development
-            </Badge>
-            <Badge
-              variant="secondary"
-              className="cursor-pointer hover:bg-secondary/80"
-            >
-              React
-            </Badge>
-            <Badge
-              variant="secondary"
-              className="cursor-pointer hover:bg-secondary/80"
-            >
-              Design
-            </Badge>
-            <Badge
-              variant="secondary"
-              className="cursor-pointer hover:bg-secondary/80"
-            >
-              TypeScript
-            </Badge>
-            <Badge
-              variant="secondary"
-              className="cursor-pointer hover:bg-secondary/80"
-            >
-              UI/UX
-            </Badge>
-            <Badge
-              variant="secondary"
-              className="cursor-pointer hover:bg-secondary/80"
-            >
-              JavaScript
-            </Badge>
-            <Badge
-              variant="secondary"
-              className="cursor-pointer hover:bg-secondary/80"
-            >
-              CSS
-            </Badge>
-            <Badge
-              variant="secondary"
-              className="cursor-pointer hover:bg-secondary/80"
-            >
-              Performance
-            </Badge>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
+                <Hash className="h-5 w-5 text-blue-500" />
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <p className="text-xs text-muted-foreground">Tags</p>
+                <p className="text-sm font-medium">{numberOfTags} new added</p>
+              </div>
+            </div>
           </div>
-        </Card>
-      </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10">
+                <FolderOpen className="h-5 w-5 text-purple-500" />
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <p className="text-xs text-muted-foreground">Collections</p>
+                <p className="text-sm font-medium">
+                  {numberOfCollections} new added
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

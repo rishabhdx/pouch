@@ -19,6 +19,7 @@
     "@pouch/auth": "workspace:*",
     "@pouch/db": "workspace:*",
     "@pouch/ui": "workspace:*",
+    "@tanstack/react-query": "^5.90.2",
     "@tanstack/react-table": "^8.21.3",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.5",

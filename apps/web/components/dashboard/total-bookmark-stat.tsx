@@ -22,13 +22,13 @@ export async function TotalBookmarkStat({ userId }: { userId: string }) {
             Total Bookmarks
           </p>
           <p className="text-3xl font-bold mt-2">{numberOfBookmarks}</p>
-          <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-            <TrendingUp className="h-3 w-3 text-green-500" />
+          <p className="text-xs font-medium text-muted-foreground mt-1 flex items-center gap-1">
+            <TrendingUp className="h-3 w-3 text-green-500" aria-hidden="true" />
             <span className="text-green-500">12% from last month</span>
           </p>
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-          <BookmarkIcon className="h-6 w-6 text-primary" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-fuchsia-500/10">
+          <BookmarkIcon className="h-6 w-6 text-fuchsia-500" />
         </div>
       </div>
     </Card>
