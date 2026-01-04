@@ -25,14 +25,6 @@ export function BookmarkOptions({
   initialCollections,
   initialTags
 }: BookmarkOptionsProps) {
-  console.log({
-    initialQuery,
-    initialFavorite,
-    initialArchived,
-    initialCollections,
-    initialTags
-  });
-
   const [searchQuery, setSearchQuery] = useQueryState(
     "q",
     parseAsString.withDefault(initialQuery)
@@ -54,11 +46,9 @@ export function BookmarkOptions({
     parseAsArrayOf(parseAsString, ";").withDefault(initialTags)
   );
 
-  console.log({ favorite, archived, collections, tags });
-
   return (
     <div className="flex-1 inline-flex items-center justify-end gap-4">
-      <SearchInput value={searchQuery} setValue={setSearchQuery} />
+      {/* <SearchInput value={searchQuery} setValue={setSearchQuery} /> */}
       <FiltersSheet
         favorite={favorite}
         setFavorite={setFavorite}

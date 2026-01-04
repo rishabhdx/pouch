@@ -6,6 +6,7 @@ import { RecentSaves } from "@/components/dashboard/recent-saves";
 import { StatsRow } from "@/components/dashboard/stats-row";
 import { auth } from "@pouch/auth/server";
 import { PopularTags } from "@/components/dashboard/popular-tags";
+// import { isAuthenticated } from "@pouch/backend/better-auth/server";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
@@ -15,6 +16,14 @@ export default async function DashboardPage() {
   if (!session) {
     redirect("/");
   }
+
+  // const isAuth = await isAuthenticated();
+
+  // if (!isAuth) {
+  //   redirect("/");
+  // }
+
+  // console.log({ isAuth });
 
   return (
     <div className="h-full w-full py-4 px-4 lg:px-6 overflow-hidden flex flex-col gap-2">

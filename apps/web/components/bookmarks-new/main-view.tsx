@@ -1,6 +1,4 @@
-"use client";
-
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+// import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { type BookmarkWithCollection } from "@pouch/db/schema";
 import { ListViewItem } from "@/components/bookmarks-new/list-view-item";

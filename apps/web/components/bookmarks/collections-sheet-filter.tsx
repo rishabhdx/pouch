@@ -11,19 +11,20 @@ import {
 import { Checkbox } from "@pouch/ui/components/checkbox";
 import { Label } from "@pouch/ui/components/label";
 import { cn } from "@pouch/ui/lib/utils";
-import { sidebarData } from "@/constants/sample-data";
 import { Badge } from "@pouch/ui/components/badge";
 
 interface CollectionsSheetFilterProps {
   value: string[];
   setValue: (v: string[]) => void;
   isCollectionsDisabled?: boolean;
+  allCollections: { id: string; name: string; slug: string }[];
 }
 
 export function CollectionsSheetFilter({
   value = [],
   setValue,
-  isCollectionsDisabled = false
+  isCollectionsDisabled = false,
+  allCollections
 }: CollectionsSheetFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -37,7 +38,7 @@ export function CollectionsSheetFilter({
         "[&[data-state=open]>div>button>svg]:rotate-180 [&[data-state=open]>div>button>svg]:transition-transform"
       )}
     >
-      <CollapsibleTrigger className="w-full py-4 flex items-center justify-between text-muted-foreground hover:text-foreground">
+      <CollapsibleTrigger className="w-full py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <FolderOpen
@@ -51,7 +52,9 @@ export function CollectionsSheetFilter({
               variant="secondary"
               className="text-xs text-muted-foreground rounded-full"
             >
-              {value.length} filters applied
+              {value.length > 1
+                ? `${value.length} collections selected`
+                : "1 collection selected"}
             </Badge>
           )}
         </div>
@@ -70,10 +73,10 @@ export function CollectionsSheetFilter({
               Collection filters are currently disabled.
             </p>
           )}
-          {sidebarData.collections.map(collection => (
-            <div className="flex items-center gap-2" key={collection.slug}>
+          {allCollections.map(collection => (
+            <div className="flex items-center gap-2" key={collection.id}>
               <Checkbox
-                id={collection.slug}
+                id={`${collection.id}-${collection.slug}`}
                 checked={value.includes(collection.slug)}
                 onCheckedChange={checked => {
                   if (checked) {
@@ -84,7 +87,9 @@ export function CollectionsSheetFilter({
                 }}
                 disabled={isCollectionsDisabled}
               />
-              <Label htmlFor={collection.slug}>{collection.name}</Label>
+              <Label htmlFor={`${collection.id}-${collection.slug}`}>
+                {collection.name}
+              </Label>
             </div>
           ))}
         </div>

@@ -15,9 +15,7 @@ export function ArchivedSheetFilter({
     <div className="w-full py-4 flex items-center justify-between space-x-2">
       <div className="flex items-center gap-2">
         <Archive className="size-4 text-muted-foreground" aria-hidden="true" />
-        <Label htmlFor="archived" className="text-muted-foreground">
-          Archived
-        </Label>
+        <Label htmlFor="archived">Archived</Label>
       </div>
       <Switch
         id="archived"

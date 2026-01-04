@@ -16,8 +16,11 @@ export async function AllCollections({ userId }: AllCollectionsProps) {
   const allCollections = await db.query.collections.findMany({
     where: (collection, { eq }) => eq(collection.userId, userId),
     orderBy: (collection, { desc }) => [desc(collection.createdAt)]
-    // with: {bookmarks: {}}
-    // with: { bookmarks: { with: { bookmarksToTags: { with: { tag: true } } } } }
+    // with: {
+    //   bookmarks: {
+    //     where: (bookmark, { eq }) => eq(bookmark.userId, userId)
+    //   }
+    // }
   });
 
   console.log("All collections:", allCollections);

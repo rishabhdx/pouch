@@ -11,24 +11,41 @@ import {
 } from "@pouch/ui/components/empty";
 import Link from "next/link";
 
-export function BookmarksEmptyState() {
+const DEFAULT_VALUES = {
+  title: "No bookmarks found",
+  description:
+    "You haven't added any bookmarks in this collection yet. Get started by adding one using our web extension.",
+  ctaText: "Download extension",
+  ctaLink: "#"
+};
+
+type BookmarksEmptyStateProps = {
+  title?: string;
+  description?: string;
+  ctaText?: string;
+  ctaLink?: string;
+};
+
+export function BookmarksEmptyState({
+  title = DEFAULT_VALUES.title,
+  description = DEFAULT_VALUES.description,
+  ctaText = DEFAULT_VALUES.ctaText,
+  ctaLink = DEFAULT_VALUES.ctaLink
+}: BookmarksEmptyStateProps) {
   return (
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <FolderX className="size-6" aria-hidden="true" />
         </EmptyMedia>
-        <EmptyTitle className="font-semibold">No bookmarks found</EmptyTitle>
-        <EmptyDescription>
-          You haven&apos;t added any bookmarks in this collection yet. Get
-          started by adding one using our web extension.
-        </EmptyDescription>
+        <EmptyTitle className="font-semibold">{title}</EmptyTitle>
+        <EmptyDescription>{description}</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
         <div className="flex gap-2">
           <Button asChild>
-            <Link href="#">
-              Download extension
+            <Link href={ctaLink}>
+              {ctaText}
               <ArrowUpRightIcon className="size-4" aria-hidden="true" />
             </Link>
           </Button>

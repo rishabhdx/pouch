@@ -13,9 +13,6 @@ dotenv.config({
   path: "../../.env"
 });
 
-console.log("DATABASE_URL from auth:", process.env.DATABASE_URL);
-console.log("BETTER_AUTH_SECRET from auth:", process.env.BETTER_AUTH_SECRET);
-
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg"

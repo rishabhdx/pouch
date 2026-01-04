@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { type Row } from "@tanstack/react-table";
 import { formatDistance, subDays } from "date-fns";
 import { enIN } from "date-fns/locale";
@@ -33,7 +33,12 @@ import {
   Trash2
 } from "lucide-react";
 
-export const ListViewItem = ({ row }: { row: Row<BookmarkWithCollection> }) => {
+export const ListViewItem = memo(function ({
+  row
+}: {
+  row: Row<BookmarkWithCollection>;
+}) {
+  // console.log("Rendering row:", row.id);
   const [showArchiveDialog, setShowArchiveDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -42,10 +47,8 @@ export const ListViewItem = ({ row }: { row: Row<BookmarkWithCollection> }) => {
     url,
     ogImage,
     bookmarksToTags,
-    domain,
     documentDescription,
     collection,
-    collectionId,
     isFavorite,
     isArchived,
     createdAt
@@ -53,13 +56,13 @@ export const ListViewItem = ({ row }: { row: Row<BookmarkWithCollection> }) => {
 
   return (
     <div className="w-full flex gap-4">
-      <div className="aspect-video relative max-w-60">
+      <div className="aspect-video relative max-w-64 w-full h-36 shrink-0">
         <img
           src={ogImage || PlaceholderImage.src}
           alt={title}
           role="img"
           loading="lazy"
-          className="w-full h-full rounded-md border border-border"
+          className="w-full h-full rounded-md border border-border object-cover"
         />
       </div>
 
@@ -187,4 +190,4 @@ export const ListViewItem = ({ row }: { row: Row<BookmarkWithCollection> }) => {
       />
     </div>
   );
-};
+});

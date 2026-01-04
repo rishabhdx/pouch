@@ -1,7 +1,7 @@
-import { count, eq, and } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 
 import { db } from "@pouch/db";
-import { bookmarks, tags } from "@pouch/db/schema";
+import { tags } from "@pouch/db/schema";
 import { Card } from "@pouch/ui/components/card";
 import { Hash, TrendingUp } from "lucide-react";
 

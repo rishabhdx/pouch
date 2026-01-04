@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 
+import { usePathname } from "next/navigation";
 import { type Collection } from "@pouch/db/schema";
 import {
   SidebarMenuBadge,
@@ -16,6 +19,7 @@ type ItemTreeProps = {
 
 export function ItemsTree({ item }: ItemTreeProps) {
   // Dumping code here in I want to add nested collections later
+
   // if (item.nested && item.nested.length > 0) {
   //   return (
   //     <SidebarMenuItem>
@@ -53,9 +57,14 @@ export function ItemsTree({ item }: ItemTreeProps) {
   //   );
   // }
 
+  const pathname = usePathname();
+
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild>
+      <SidebarMenuButton
+        asChild
+        isActive={pathname === `/dashboard/collections/${item.slug}`}
+      >
         <Link href={`/dashboard/collections/${item.slug}`}>
           {/* {item.icon ? <item.icon /> : <File />} */}
           {item.name}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useState } from "react";
 import { ChevronDown, Hash } from "lucide-react";
 
 import {
@@ -16,14 +16,17 @@ import { Badge } from "@pouch/ui/components/badge";
 interface TagsSheetFilterProps {
   value: string[];
   setValue: (v: string[]) => void;
+  allTags: { id: string; name: string; slug: string }[];
 }
 
 export function TagsSheetFilter({
   value = [],
-  setValue
+  setValue,
+  allTags = []
 }: TagsSheetFilterProps) {
-  const id = useId();
   const [isOpen, setIsOpen] = useState(false);
+
+  // console.log("TagsSheetFilter render:", { value, allTags });
 
   return (
     <Collapsible
@@ -35,7 +38,7 @@ export function TagsSheetFilter({
         "[&[data-state=open]>div>button>svg]:rotate-180 [&[data-state=open]>div>button>svg]:transition-transform"
       )}
     >
-      <CollapsibleTrigger className="w-full py-4 flex items-center justify-between text-muted-foreground hover:text-foreground">
+      <CollapsibleTrigger className="w-full py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <Hash className="size-4 text-muted-foreground" aria-hidden="true" />
@@ -46,7 +49,9 @@ export function TagsSheetFilter({
               variant="secondary"
               className="text-xs text-muted-foreground rounded-full"
             >
-              2 filters applied
+              {value.length > 1
+                ? `${value.length} tags selected`
+                : "1 tag selected"}
             </Badge>
           )}
         </div>
@@ -55,42 +60,22 @@ export function TagsSheetFilter({
       </CollapsibleTrigger>
       <CollapsibleContent className="flex flex-col gap-2">
         <div className="grid gap-3">
-          <div className="flex items-center gap-2">
-            <Checkbox id={`${id}-1`} />
-            <Label htmlFor={`${id}-1`}>state</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id={`${id}-2`} />
-            <Label htmlFor={`${id}-2`}>styling</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id={`${id}-3`} />
-            <Label htmlFor={`${id}-3`}>next 15</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id={`${id}-3`} />
-            <Label htmlFor={`${id}-3`}>tanstack router</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id={`${id}-3`} />
-            <Label htmlFor={`${id}-3`}>turborepo</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id={`${id}-3`} />
-            <Label htmlFor={`${id}-3`}>shadcn</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id={`${id}-3`} />
-            <Label htmlFor={`${id}-3`}>ui</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id={`${id}-3`} />
-            <Label htmlFor={`${id}-3`}>tanstack query</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id={`${id}-3`} />
-            <Label htmlFor={`${id}-3`}>full stack</Label>
-          </div>
+          {allTags.map(tag => (
+            <div key={tag.id} className="flex items-center gap-2">
+              <Checkbox
+                id={`${tag.id}-${tag.slug}`}
+                checked={value.includes(tag.slug)}
+                onCheckedChange={checked => {
+                  if (checked) {
+                    setValue([...value, tag.slug]);
+                  } else {
+                    setValue(value.filter(c => c !== tag.slug));
+                  }
+                }}
+              />
+              <Label htmlFor={`${tag.id}-${tag.slug}`}>{tag.name}</Label>
+            </div>
+          ))}
         </div>
       </CollapsibleContent>
     </Collapsible>

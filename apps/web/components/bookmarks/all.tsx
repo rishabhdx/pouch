@@ -23,7 +23,7 @@ export async function AllBookmarks({ userId }: AllBookmarksProps) {
 
   // console.log("All bookmarks:", allBookmarks);
 
-  // return <BookmarksView data={allBookmarks} />;
+  return <BookmarksView data={allBookmarks} />;
 
-  return <MainView data={allBookmarks} />;
+  // return <MainView data={allBookmarks} />;
 }

@@ -1,19 +1,11 @@
 import { headers } from "next/headers";
-import Link from "next/link";
 import { and, eq } from "drizzle-orm";
 
 import { auth } from "@pouch/auth/server";
 import { db } from "@pouch/db";
 import { bookmarks } from "@pouch/db/schema";
-import {
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuBadge,
-  SidebarMenuButton,
-  SidebarMenuItem
-} from "@pouch/ui/components/sidebar";
-import { Archive, Cloud, Heart } from "lucide-react";
-
+import { SidebarGroupContent, SidebarMenu } from "@pouch/ui/components/sidebar";
+import { GroupItem } from "@/components/dashboard-sidebar/group-item";
 export async function StaticSidebarGroup() {
   const session = await auth.api.getSession({
     headers: await headers()
@@ -39,7 +31,27 @@ export async function StaticSidebarGroup() {
   return (
     <SidebarGroupContent>
       <SidebarMenu>
-        <SidebarMenuItem>
+        <GroupItem
+          label="All"
+          icon="cloud"
+          href="/dashboard/all"
+          count={allBookmarksCount}
+        />
+        <GroupItem
+          label="Favorites"
+          icon="heart"
+          href="/dashboard/favorite"
+          // href="/dashboard/all?favorite=true"
+          count={favoritesCount}
+        />
+        <GroupItem
+          label="Archived"
+          icon="archive"
+          href="/dashboard/archived"
+          // href="/dashboard/all?archived=true"
+          count={archivedCount}
+        />
+        {/* <SidebarMenuItem>
           <SidebarMenuButton asChild>
             <Link href={`/dashboard/all`}>
               <Cloud className="size-4" aria-hidden="true" />
@@ -71,7 +83,7 @@ export async function StaticSidebarGroup() {
           <SidebarMenuBadge className="font-mono text-muted-foreground">
             {archivedCount}
           </SidebarMenuBadge>
-        </SidebarMenuItem>
+        </SidebarMenuItem> */}
       </SidebarMenu>
     </SidebarGroupContent>
   );

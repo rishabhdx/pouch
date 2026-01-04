@@ -18,6 +18,8 @@ import { FolderOpen } from "lucide-react";
 import { StaticSidebarGroup } from "./static-group";
 import { DynamicSidebarGroup } from "./dynamic-group";
 import { SidebarGroupsLoadingState } from "../loading-states/sidebar-groups";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Folder01FreeIcons } from "@hugeicons/core-free-icons";
 
 export async function DashboardSidebar({
   ...props
@@ -29,7 +31,7 @@ export async function DashboardSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <Link href="/dashboard" className="flex items-center gap-2">
                 <span className="text-base font-semibold">Pouch</span>
@@ -47,7 +49,14 @@ export async function DashboardSidebar({
         <SidebarGroup>
           <SidebarGroupLabel className="hover:underline gap-2" asChild>
             <Link href="/dashboard/collections">
-              <FolderOpen className="size-3 shrink-0 text-muted-foreground" />
+              {/* <FolderOpen className="size-3 shrink-0 text-muted-foreground" /> */}
+              <HugeiconsIcon
+                icon={Folder01FreeIcons}
+                color="currentColor"
+                // size={12}
+                // className="size-3"
+                aria-hidden="true"
+              />
               Collections
             </Link>
           </SidebarGroupLabel>

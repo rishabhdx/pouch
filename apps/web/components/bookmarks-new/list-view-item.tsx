@@ -53,7 +53,7 @@ export function ListViewItem({ item, hideActions = false }: ListViewItemProps) {
 
   return (
     <div className="w-full flex gap-4">
-      <div className="aspect-video relative max-w-60">
+      <div className="aspect-video relative max-w-64 w-full h-36 shrink-0">
         <img
           src={ogImage || PlaceholderImage.src}
           alt={title}

@@ -1,14 +1,19 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { memo } from "react";
+
 import { Input } from "@pouch/ui/components/input";
+import { Search } from "lucide-react";
 
 interface SearchInputProps {
   value: string;
   setValue: (value: string) => void;
 }
 
-export function SearchInput({ value, setValue }: SearchInputProps) {
+export const SearchInput = memo(function SearchInput({
+  value,
+  setValue
+}: SearchInputProps) {
   return (
     <div className="shrink-0 relative max-w-80 w-full">
       <Input
@@ -24,4 +29,4 @@ export function SearchInput({ value, setValue }: SearchInputProps) {
       </div>
     </div>
   );
-}
+});

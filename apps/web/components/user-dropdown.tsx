@@ -195,7 +195,7 @@ export function UserDropdown() {
         <DropdownMenuItem
           variant="destructive"
           onClick={() => handleSignOut()}
-          className="font-medium data-[variant=destructive]:bg-destructive/25 data-[variant=destructive]:text-destructive-foreground data-[variant=destructive]:focus:text-destructive-foreground data-[variant=destructive]:*:[svg]:!text-destructive-foreground dark:data-[variant=destructive]:focus:bg-destructive/50"
+          className="font-medium data-[variant=destructive]:bg-destructive/25 data-[variant=destructive]:text-destructive-foreground data-[variant=destructive]:focus:text-destructive-foreground data-[variant=destructive]:*:[svg]:text-destructive-foreground! dark:data-[variant=destructive]:focus:bg-destructive/50"
         >
           <LogOut />
           Log out

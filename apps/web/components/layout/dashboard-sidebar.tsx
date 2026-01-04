@@ -23,23 +23,16 @@ import {
   SidebarMenuSub
 } from "@pouch/ui/components/sidebar";
 import {
-  Archive,
-  BadgeCheck,
-  Bell,
   ChevronDown,
-  ChevronsUpDown,
   ChevronUp,
-  Cloud,
-  CreditCard,
   File,
   FolderClosed,
-  FolderOpen,
-  Heart,
-  LogOut,
-  Sparkles
+  FolderOpen
 } from "lucide-react";
 import { sidebarData } from "@/constants/sample-data";
 import { UserDropdown } from "@/components/user-dropdown";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Folder01FreeIcons } from "@hugeicons/core-free-icons";
 
 function Tree({
   item
@@ -148,7 +141,13 @@ export function DashboardSidebar({
         <SidebarGroup>
           <SidebarGroupLabel className="hover:underline gap-2" asChild>
             <Link href="/dashboard/collections">
-              <FolderOpen className="size-3 shrink-0 text-muted-foreground" />
+              {/* <FolderOpen className="size-3 shrink-0 text-muted-foreground" /> */}
+              <HugeiconsIcon
+                icon={Folder01FreeIcons}
+                color="currentColor"
+                className="size-4"
+                aria-hidden="true"
+              />
               Collections
             </Link>
           </SidebarGroupLabel>

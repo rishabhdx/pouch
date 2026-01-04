@@ -2,10 +2,11 @@ import { Suspense } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { db } from "@pouch/db";
 import { auth } from "@pouch/auth/server";
 import { AllBookmarks } from "@/components/bookmarks/all";
 import { BookmarksLoadingState } from "@/components/loading-states/bookmarks";
-import { BookmarkOptions } from "@/components/bookmarks-new/options";
+import { BookmarkOptions } from "@/components/bookmarks/options";
 
 type SearchParams = {
   q?: string;
@@ -13,6 +14,7 @@ type SearchParams = {
   archived?: string;
   collections?: string;
   tags?: string;
+  sort?: string;
   page?: string;
 };
 
@@ -29,6 +31,28 @@ export default async function AllLinksPage({
     redirect("/");
   }
 
+  // Fetch collections and tags in parallel
+  const [allCollections, allTags] = await Promise.all([
+    db.query.collections.findMany({
+      where: (collections, { eq }) => eq(collections.userId, session.user.id),
+      orderBy: (collections, { desc }) => [desc(collections.createdAt)],
+      columns: {
+        id: true,
+        name: true,
+        slug: true
+      }
+    }),
+    db.query.tags.findMany({
+      where: (tags, { eq }) => eq(tags.userId, session.user.id),
+      orderBy: (tags, { desc }) => [desc(tags.createdAt)],
+      columns: {
+        id: true,
+        name: true,
+        slug: true
+      }
+    })
+  ]);
+
   const params = await searchParams;
 
   return (
@@ -42,10 +66,13 @@ export default async function AllLinksPage({
           initialQuery={params.q ?? ""}
           initialFavorite={params.favorite === "true"}
           initialArchived={params.archived === "true"}
+          initialSort={params.sort ? JSON.parse(params.sort) : []}
+          initialTags={params.tags ? params.tags.split(";") : []}
           initialCollections={
             params.collections ? params.collections.split(";") : []
           }
-          initialTags={params.tags ? params.tags.split(";") : []}
+          allCollections={allCollections}
+          allTags={allTags}
         />
       </div>
       <Suspense fallback={<BookmarksLoadingState />}>
