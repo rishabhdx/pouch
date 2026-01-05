@@ -4,6 +4,7 @@ import { db } from "@pouch/db";
 import { BookmarkWithCollection } from "@pouch/db/schema";
 import { Button } from "@pouch/ui/components/button";
 import { ListViewItem } from "@/components/bookmarks-new/list-view-item";
+import { Card } from "@pouch/ui/components/card";
 
 export async function RecentSaves({ userId }: { userId: string }) {
   const allBookmarks: BookmarkWithCollection[] =
@@ -14,6 +15,31 @@ export async function RecentSaves({ userId }: { userId: string }) {
       with: { collection: true, bookmarksToTags: { with: { tag: true } } },
       limit: 5
     });
+
+  return (
+    <Card className="lg:col-span-2 py-0 overflow-hidden bg-muted/50 flex flex-col gap-0">
+      <div className="px-4 py-3 w-full flex justify-between items-center text-foreground">
+        <p className="text-sm font-medium">Recent saves</p>
+        <Link
+          href="/dashboard/all"
+          className="text-muted-foreground text-xs font-medium"
+        >
+          View All
+        </Link>
+      </div>
+      <div className="border-t border-border flex flex-col gap-2 rounded-xl bg-background flex-1 p-4">
+        <div className="flex flex-col gap-6">
+          {allBookmarks.map(bookmark => (
+            <ListViewItem
+              key={bookmark.id}
+              item={bookmark}
+              hideActions={true}
+            />
+          ))}
+        </div>
+      </div>
+    </Card>
+  );
 
   return (
     <div className="lg:col-span-2 flex flex-col gap-4">

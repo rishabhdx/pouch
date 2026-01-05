@@ -20,6 +20,8 @@ import { ArchivedSheetFilter } from "@/components/bookmarks/archived-sheet-filte
 import { FavoritesSheetFilter } from "@/components/bookmarks/favorites-sheet-filter";
 
 import { Settings2 } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { FilterHorizontalIcon } from "@hugeicons/core-free-icons";
 
 interface FilterSheetProps {
   favorite: boolean | null;
@@ -54,7 +56,12 @@ export const FiltersSheet = memo(function FiltersSheet({
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="outline">
-          <Settings2 className="size-4" aria-hidden="true" />
+          {/* <Settings2 className="size-4" aria-hidden="true" /> */}
+          <HugeiconsIcon
+            icon={FilterHorizontalIcon}
+            color="currentColor"
+            strokeWidth={1.5}
+          />
           Filters
         </Button>
       </SheetTrigger>

@@ -3,7 +3,9 @@
 import { memo } from "react";
 
 import { Input } from "@pouch/ui/components/input";
-import { Search } from "lucide-react";
+
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Search02Icon } from "@hugeicons/core-free-icons";
 
 interface SearchInputProps {
   value: string;
@@ -20,12 +22,19 @@ export const SearchInput = memo(function SearchInput({
         placeholder="Search by title, domain, or URL"
         value={value ?? ""}
         onChange={e => setValue(e.target.value)}
-        className="w-full pl-8 placeholder:text-foreground"
+        className="w-full pl-9 placeholder:text-foreground"
       />
 
       <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-foreground peer-disabled:opacity-50">
         {/* <Filter className="size-4" aria-hidden="true" /> */}
-        <Search className="size-4 text-muted-foreground" aria-hidden="true" />
+        {/* <Search className="size-4 text-muted-foreground" aria-hidden="true" /> */}
+        <HugeiconsIcon
+          icon={Search02Icon}
+          color="currentColor"
+          strokeWidth={1.5}
+          className="size-4 text-muted-foreground"
+          aria-hidden="true"
+        />
       </div>
     </div>
   );

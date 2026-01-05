@@ -13,9 +13,11 @@ export async function PopularTags({ userId }: { userId: string }) {
     .limit(8);
 
   return (
-    <div className="flex flex-col gap-4">
-      <h3 className="text-xl font-semibold">Popular Tags</h3>
-      <Card className="p-4">
+    <Card className="py-0 overflow-hidden bg-muted/50 flex flex-col gap-0">
+      <div className="px-4 py-3 w-full flex justify-between items-center text-foreground">
+        <p className="text-sm font-medium">Popular tags</p>
+      </div>
+      <div className="border-t border-border flex flex-col gap-2 rounded-xl bg-background flex-1 p-4">
         <div className="flex flex-wrap gap-2">
           {result.map(tag => (
             <TagBadge key={tag.id} className="rounded-full font-semibold">
@@ -23,7 +25,7 @@ export async function PopularTags({ userId }: { userId: string }) {
             </TagBadge>
           ))}
         </div>
-      </Card>
-    </div>
+      </div>
+    </Card>
   );
 }

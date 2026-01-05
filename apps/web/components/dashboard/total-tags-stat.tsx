@@ -4,6 +4,8 @@ import { db } from "@pouch/db";
 import { tags } from "@pouch/db/schema";
 import { Card } from "@pouch/ui/components/card";
 import { Hash, TrendingUp } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Tag01Icon, TagsIcon } from "@hugeicons/core-free-icons";
 
 export async function TotalTagsStat({ userId }: { userId: string }) {
   const result = await db
@@ -14,18 +16,22 @@ export async function TotalTagsStat({ userId }: { userId: string }) {
   const numberOfTags = result[0]?.count || 0;
 
   return (
-    <Card className="p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-muted-foreground">Tags</p>
-          <p className="text-3xl font-bold mt-2">{numberOfTags}</p>
-          <p className="text-xs font-medium text-muted-foreground mt-1 flex items-center gap-1">
-            <TrendingUp className="h-3 w-3 text-green-500" aria-hidden="true" />
-            <span className="text-green-500">+1 from last month</span>
-          </p>
-        </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10">
-          <Hash className="h-6 w-6 text-blue-500" />
+    <Card className="py-0 overflow-hidden bg-muted/50 flex flex-col gap-0">
+      <div className="px-4 py-3 w-full flex justify-between items-center text-foreground">
+        <p className="text-sm font-medium">Tags</p>
+        <HugeiconsIcon
+          icon={Tag01Icon}
+          color="currentColor"
+          className="size-4"
+        />
+      </div>
+      <div className="border-t border-border flex flex-col gap-2 rounded-xl bg-background flex-1 p-4">
+        <div className="w-full flex items-center justify-between">
+          <p className="text-3xl font-bold">{numberOfTags}</p>
+          <div className="inline-flex items-center gap-2">
+            <TrendingUp className="size-4 text-green-500" aria-hidden="true" />
+            <span className="text-green-500">12%</span>
+          </div>
         </div>
       </div>
     </Card>

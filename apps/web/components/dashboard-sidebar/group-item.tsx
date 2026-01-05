@@ -8,32 +8,28 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@pouch/ui/components/sidebar";
-import { Archive, Cloud, Heart } from "lucide-react";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 
 type GroupItemProps = {
   label: string;
-  icon?: "cloud" | "heart" | "archive";
   href: string;
   count?: number;
-};
-
-const iconMap = {
-  cloud: Cloud,
-  heart: Heart,
-  archive: Archive
+  icon?: IconSvgElement;
 };
 
 export function GroupItem({ label, icon, href, count = 0 }: GroupItemProps) {
   const pathname = usePathname();
-  const IconComponent = icon ? iconMap[icon] : null;
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild isActive={pathname === href}>
+      <SidebarMenuButton asChild isActive={pathname === href} className="py-3">
         <Link href={href}>
-          {IconComponent && (
-            <IconComponent
-              className="size-4 text-muted-foreground"
+          {icon && (
+            <HugeiconsIcon
+              icon={icon}
+              color="currentColor"
+              strokeWidth={1.5}
+              className="size-4 text-foreground"
               aria-hidden="true"
             />
           )}

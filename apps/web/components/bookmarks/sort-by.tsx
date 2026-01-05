@@ -1,3 +1,5 @@
+import { ArrowUpDownIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@pouch/ui/components/button";
 import {
   DropdownMenu,
@@ -55,7 +57,12 @@ export const SortBy = memo(function SortByBase({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">
-          <ArrowUpDown className="size-4" aria-hidden="true" />
+          {/* <ArrowUpDown className="size-4" aria-hidden="true" /> */}
+          <HugeiconsIcon
+            icon={ArrowUpDownIcon}
+            color="currentColor"
+            strokeWidth={1.5}
+          />
           Sort by
         </Button>
       </DropdownMenuTrigger>
