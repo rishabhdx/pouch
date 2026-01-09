@@ -5,6 +5,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ProgressProvider } from "@bprogress/next/app";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { Toaster } from "@pouch/ui/components/sonner";
 
 // import { ConvexReactClient } from "convex/react";
 // import { authClient } from "@pouch/backend/better-auth/client";
@@ -44,6 +45,7 @@ export function Providers({
         >
           <QueryClientProvider client={queryClient}>
             {children}
+            <Toaster />
           </QueryClientProvider>
         </NextThemesProvider>
       </NuqsAdapter>

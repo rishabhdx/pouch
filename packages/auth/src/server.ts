@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { toNextJsHandler } from "better-auth/next-js";
 import { toNodeHandler } from "better-auth/node";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+
 import { db } from "@pouch/db";
 import dotenv from "dotenv";
 // import "dotenv/config";
@@ -26,17 +27,24 @@ export const auth = betterAuth({
     "http://localhost:8080",
     "moz-extension://*",
     "chrome-extension://*"
-  ]
-  // socialProviders: {
-  //   google: {
-  //     clientId: process.env.GOOGLE_CLIENT_ID as string,
-  //     clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
-  //   },
-  //   github: {
-  //     clientId: process.env.GITHUB_CLIENT_ID as string,
-  //     clientSecret: process.env.GITHUB_CLIENT_SECRET as string
-  //   }
-  // }
+  ],
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5 // 5 minutes
+    }
+  },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
+    },
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string
+    }
+  }
+  // plugins: [nextCookies()]
 });
 
 export const authHandler = toNextJsHandler(auth.handler);

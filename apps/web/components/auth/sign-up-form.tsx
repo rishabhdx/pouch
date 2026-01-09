@@ -1,284 +1,227 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import Link from "next/link";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useForm } from "@tanstack/react-form";
+import { toast } from "sonner";
+
 import { cn } from "@pouch/ui/lib/utils";
 import { Button } from "@pouch/ui/components/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "@pouch/ui/components/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@pouch/ui/components/form";
-import { Alert, AlertTitle } from "@pouch/ui/components/alert";
-import { Input } from "@pouch/ui/components/input";
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldSeparator
+} from "@pouch/ui/components/field";
 import { authClient } from "@pouch/auth/client";
-import { AlertOctagon } from "lucide-react";
-
-const formSchema = z
-  .object({
-    name: z
-      .string()
-      .min(2, { message: "Name must be at least 2 characters long" })
-      .max(25, { message: "Name must be at most 25 characters long" }),
-    email: z.string().email({
-      message: "Please enter a valid email address"
-    }),
-    password: z
-      .string({
-        message: "Please enter a valid password"
-      })
-      .min(8, { message: "Password should be at least 8 characters long" })
-      .max(16, { message: "Password should be at most 16 characters long" }),
-    confirmPassword: z
-      .string({
-        message: "Invalid confirm password"
-      })
-      .min(8, { message: "Password should be at least 8 characters long" })
-      .max(16, { message: "Password should be at most 16 characters long" })
-  })
-  .refine(
-    values => {
-      return values.password === values.confirmPassword;
-    },
-    {
-      message: "Passwords must match",
-      path: ["confirmPassword"]
-    }
-  );
-
-type FormValues = z.infer<typeof formSchema>;
+import {
+  NameField,
+  EmailField,
+  PasswordField,
+  ConfirmPasswordField
+} from "@/components/auth/fields";
+import { signUpFormSchema } from "@/components/auth/schema";
+import { GalleryVerticalEnd } from "lucide-react";
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm({
     defaultValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: ""
+    },
+    validators: {
+      onSubmit: signUpFormSchema
+    },
+    onSubmit: async ({ value }) => {
+      await authClient.signUp.email(
+        {
+          name: value.name,
+          email: value.email,
+          password: value.password
+        },
+        {
+          onSuccess: () => {
+            router.push("/dashboard");
+          },
+          onError: ({ error }) => {
+            toast.error("An error has occured.", {
+              description: error.message,
+              closeButton: true
+            });
+          }
+        }
+      );
     }
   });
 
-  const handleFormSubmit = async (data: FormValues) => {
-    setIsLoading(true);
-
-    authClient.signUp.email(
-      {
-        name: data.name,
-        email: data.email,
-        password: data.password
-      },
-      {
-        onSuccess: () => {
-          router.push("/");
-          setIsLoading(false);
-          setError(null); // Reset error state
-        },
-        onError: ({ error }) => {
-          setError(error.message);
-          setIsLoading(false);
-        }
-      }
-    );
-  };
-
-  const handleContinueWithGithub = async () => {
+  const handleSocialLogin = async (provider: "github" | "google") => {
     const data = await authClient.signIn.social({
-      provider: "github"
+      provider
     });
 
-    console.log(data);
+    console.log("handleSocialLogin", data);
   };
 
-  const handleContinueWithGoogle = async () => {
-    const data = await authClient.signIn.social({
-      provider: "google"
-    });
-
-    console.log(data);
-  };
+  console.log("form state", form.state);
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Create a new account</CardTitle>
-          <CardDescription>
-            Sign up with your Apple or Google account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form
-              className={cn("grid gap-6", className)}
-              onSubmit={form.handleSubmit(handleFormSubmit)}
+    <div
+      className={cn("max-w-md w-full flex flex-col gap-6", className)}
+      {...props}
+    >
+      <form
+        id="sign-up-form"
+        className={cn("grid gap-6", className)}
+        onSubmit={e => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+        aria-disabled={form.state.isSubmitting}
+      >
+        <FieldGroup>
+          <div className="flex flex-col items-center gap-2 text-center">
+            <Link
+              href="/"
+              className="flex flex-col items-center gap-2 font-medium"
             >
-              <div className="grid gap-6">
-                <div className="flex flex-col gap-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={handleContinueWithGithub}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <path
-                        d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
-                        fill="currentColor"
-                      />
-                    </svg>
-                    Sign up with GitHub
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={handleContinueWithGoogle}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <path
-                        d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                    Sign up with Google
-                  </Button>
-                </div>
-                <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                  <span className="bg-card text-muted-foreground relative z-10 px-2">
-                    Or continue with
-                  </span>
-                </div>
-                <div className="grid gap-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel htmlFor="name">Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            id="name"
-                            type="text"
-                            placeholder="John Doe"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel htmlFor="email">Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            id="email"
-                            type="email"
-                            placeholder="email@example.com"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel htmlFor="password">Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            id="password"
-                            type="password"
-                            placeholder="********"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel htmlFor="confirm-password">
-                          Confirm Password
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            id="confirm-password"
-                            type="password"
-                            placeholder="********"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {!!error && (
-                    <Alert
-                      variant="destructive"
-                      className="bg-destructive/10 border-none flex items-center"
-                    >
-                      <AlertOctagon
-                        className="h-4 w-4 text-destructive -mt-1"
-                        aria-hidden="true"
-                      />
-                      <AlertTitle className="min-h-auto">{error}</AlertTitle>
-                    </Alert>
-                  )}
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    Sign up
-                  </Button>
-                </div>
-                <div className="text-center text-sm">
-                  Already have an account?{" "}
-                  <Link
-                    href="/auth/sign-in"
-                    className="underline underline-offset-4"
-                  >
-                    Sign in
-                  </Link>
-                </div>
+              <div className="flex size-8 items-center justify-center rounded-md">
+                <GalleryVerticalEnd className="size-6" />
               </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+              <span className="sr-only">Pouch</span>
+            </Link>
+            <h1 className="text-xl font-bold">Welcome to Pouch</h1>
+            <h2 className="text-muted-foreground font-medium">
+              Sign up with your Google or GitHub account
+            </h2>
+          </div>
+          <Field className="grid gap-4 sm:grid-cols-2">
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => handleSocialLogin("github")}
+              disabled={form.state.isSubmitting}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+              </svg>
+              Continue with GitHub
+            </Button>
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => handleSocialLogin("google")}
+              disabled={form.state.isSubmitting}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M12 2a9.96 9.96 0 0 1 6.29 2.226a1 1 0 0 1 .04 1.52l-1.51 1.362a1 1 0 0 1 -1.265 .06a6 6 0 1 0 2.103 6.836l.001 -.004h-3.66a1 1 0 0 1 -.992 -.883l-.007 -.117v-2a1 1 0 0 1 1 -1h6.945a1 1 0 0 1 .994 .89c.04 .367 .061 .737 .061 1.11c0 5.523 -4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10z" />
+              </svg>
+              Continue with Google
+            </Button>
+          </Field>
+
+          <FieldSeparator>Or continue with</FieldSeparator>
+
+          <form.Field
+            name="name"
+            children={field => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return <NameField field={field} isInvalid={isInvalid} />;
+            }}
+          />
+          <form.Field
+            name="email"
+            children={field => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <EmailField
+                  field={field}
+                  isInvalid={isInvalid}
+                  disabled={form.state.isSubmitting}
+                />
+              );
+            }}
+          />
+          <Field>
+            <Field className="grid grid-cols-2 gap-4">
+              <form.Field
+                name="password"
+                children={field => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+
+                  return (
+                    <PasswordField
+                      field={field}
+                      isInvalid={isInvalid}
+                      disabled={form.state.isSubmitting}
+                    />
+                  );
+                }}
+              />
+              <form.Field
+                name="confirmPassword"
+                children={field => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+
+                  return (
+                    <ConfirmPasswordField
+                      field={field}
+                      isInvalid={isInvalid}
+                      // disabled={form.state.isSubmitting}
+                    />
+                  );
+                }}
+              />
+            </Field>
+          </Field>
+
+          <Field>
+            <Button type="submit" disabled={form.state.isSubmitting}>
+              Create Account
+            </Button>
+          </Field>
+
+          <FieldDescription className="text-center text-sm">
+            Already have an account?
+            <Link
+              href="/auth/sign-in"
+              className="underline underline-offset-4 ml-2"
+            >
+              Sign in
+            </Link>
+          </FieldDescription>
+        </FieldGroup>
+      </form>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
         By clicking sign up, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
