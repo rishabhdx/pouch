@@ -1,6 +1,10 @@
 import { type Metadata } from "@/types";
 
 export function extractMetadataFromDocument(document: Document): Metadata {
+  const faviconSelector = document
+    .querySelector('link[rel="icon"]')
+    ?.getAttribute("href");
+
   const meta = {
     title: document.title,
     domain: document.location.hostname,
@@ -33,7 +37,12 @@ export function extractMetadataFromDocument(document: Document): Metadata {
       ?.getAttribute("content"),
     twitterCard: document
       .querySelector('meta[name="twitter:card"]')
-      ?.getAttribute("content")
+      ?.getAttribute("content"),
+    faviconUrl: faviconSelector
+      ? faviconSelector.startsWith("http")
+        ? faviconSelector
+        : `${document.location.origin}${faviconSelector}`
+      : null
   };
 
   return meta;

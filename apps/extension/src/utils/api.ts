@@ -15,16 +15,12 @@ export async function fetchTags() {
 }
 
 export async function createCollection(name: string) {
-  try {
-    const { data } = await axios.post(
-      `${import.meta.env.WXT_API_URL}/collections/create`,
-      { name }
-    );
+  const { data } = await axios.post(
+    `${import.meta.env.WXT_API_URL}/collections/create`,
+    { name }
+  );
 
-    return data;
-  } catch (error) {
-    console.error("Error creating collection:", error);
-  }
+  return data;
 }
 
 export async function createTag(name: string) {

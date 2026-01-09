@@ -142,6 +142,7 @@ export const bookmarks = pgTable(
     twitterDescription: text("twitter_description"),
     twitterImage: text("twitter_image"),
     twitterCard: text("twitter_card"),
+    faviconUrl: text("favicon_url"),
 
     // Additional Metadata
     // canonicalUrl: text("canonical_url"), // ?

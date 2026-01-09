@@ -11,4 +11,5 @@ export interface Metadata {
   twitterDescription: string | null | undefined;
   twitterImage: string | null | undefined;
   twitterCard: string | null | undefined;
+  faviconUrl: string | null | undefined;
 }

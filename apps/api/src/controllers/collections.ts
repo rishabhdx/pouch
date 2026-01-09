@@ -26,7 +26,10 @@ export const createCollection = async (req: Request, res: Response) => {
         description: collections.description
       });
 
-    res.status(201).json({ newCollection });
+    res.status(201).json({
+      message: "New collection created successfully",
+      collection: newCollection[0]
+    });
   } catch (error) {
     console.error("Error creating collections:", error);
     res.status(500).json({ error: "Failed to create collections" });

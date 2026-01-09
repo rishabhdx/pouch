@@ -22,6 +22,13 @@
       "when": 1763230894538,
       "tag": "0002_medical_dreaming_celestial",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1767987702660,
+      "tag": "0003_cuddly_starbolt",
+      "breakpoints": true
     }
   ]
 }

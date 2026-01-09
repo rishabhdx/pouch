@@ -32,6 +32,8 @@ import {
   Tags,
   Trash2
 } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Globe02Icon } from "@hugeicons/core-free-icons";
 
 export const ListViewItem = memo(function ({
   row
@@ -46,13 +48,13 @@ export const ListViewItem = memo(function ({
     title,
     url,
     ogImage,
-    bookmarksToTags,
     documentDescription,
-    collection,
-    isFavorite,
-    isArchived,
-    createdAt
+    createdAt,
+    domain,
+    faviconUrl
   } = row.original;
+
+  console.log("Favicon URL:", faviconUrl);
 
   return (
     <div className="w-full flex gap-4">
@@ -67,7 +69,7 @@ export const ListViewItem = memo(function ({
       </div>
 
       <div className="w-full flex flex-col gap-2">
-        {bookmarksToTags.length > 0 && (
+        {/* {bookmarksToTags.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
             {bookmarksToTags.map(({ tag }) => (
               <TagBadge key={tag.id} className="rounded-full font-mono">
@@ -75,7 +77,7 @@ export const ListViewItem = memo(function ({
               </TagBadge>
             ))}
           </div>
-        )}
+        )} */}
         <div className="flex justify-between items-baseline gap-1">
           <a
             href={url}
@@ -87,15 +89,15 @@ export const ListViewItem = memo(function ({
             {title}
           </a>
         </div>
-        <p className="text-sm text-muted-foreground line-clamp-2">
+        <p className="text-sm text-muted-foreground line-clamp-1 max-w-2xl">
           {documentDescription}
         </p>
 
-        <div className="flex-1"></div>
+        {/* <div className="flex-1"></div> */}
 
         <div className="mt-auto w-full flex justify-between items-center">
           <div className="flex items-center gap-2">
-            {collection && (
+            {/* {collection && (
               <>
                 <Badge variant="secondary" className="rounded-full">
                   <Folder className="size-4 mr-1" aria-hidden="true" />
@@ -106,7 +108,7 @@ export const ListViewItem = memo(function ({
                   aria-hidden="true"
                 />
               </>
-            )}
+            )} */}
             <time
               dateTime={new Date(createdAt).toISOString()}
               className="text-xs text-muted-foreground"
@@ -117,6 +119,23 @@ export const ListViewItem = memo(function ({
                 locale: enIN
               })}
             </time>
+            <Badge variant="outline" className="text-muted-foreground">
+              {faviconUrl ? (
+                <img
+                  src={faviconUrl}
+                  alt={domain || "favicon"}
+                  className="size-3 mr-1 rounded-sm"
+                  aria-hidden="true"
+                />
+              ) : (
+                <HugeiconsIcon
+                  icon={Globe02Icon}
+                  // className="size-4 mr-1"
+                  aria-hidden="true"
+                />
+              )}
+              {domain}
+            </Badge>
           </div>
 
           <ButtonGroup>

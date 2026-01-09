@@ -6,8 +6,8 @@ import { useStore, type StoreCollectionType } from "@/lib/store";
 import { cn } from "@pouch/ui/lib/utils";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { ArrowLeft, LoaderCircle, TriangleAlert } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchCollections } from "@/utils/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchCollections, createCollection } from "@/utils/api";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/collections")({
@@ -26,6 +26,8 @@ export const Route = createFileRoute("/collections")({
 });
 
 function Collections() {
+  const queryClient = useQueryClient();
+
   const collection = useStore(store => store.collection);
   const setCollection = useStore(store => store.setCollection);
 
@@ -44,22 +46,53 @@ function Collections() {
     refetchOnMount: false
   });
 
+  const mutation = useMutation({
+    mutationFn: createCollection,
+    onSuccess: data => {
+      console.log("Created collection:", data);
+      setCollection(data.collection);
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+    }
+  });
+
+  useEffect(() => {
+    if (data) {
+      setFilteredCollections(data.collections);
+    }
+  }, [data]);
+
   useEffect(() => {
     handleSearch();
-  }, [searchTerm, data]);
+  }, [searchTerm]);
 
   const handleSearch = () => {
     if (data) {
-      const filtered = data.collections.filter(collection =>
-        collection.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredCollections(filtered);
+      if (searchTerm.trim() !== "") {
+        const filtered = data.collections.filter(collection =>
+          collection.name.toLowerCase().startsWith(searchTerm.toLowerCase())
+        );
+        setFilteredCollections(filtered);
+      } else {
+        setFilteredCollections(data.collections);
+      }
+    } else {
+      setFilteredCollections([]);
     }
   };
 
   const handleRadioChange = (slug: string) => {
     const item = filteredCollections.find(col => col.slug === slug);
     setCollection(item || collection);
+  };
+
+  const handleCreateCollection = () => {
+    if (searchTerm.trim() === "") return;
+
+    const newCollection = searchTerm.trim();
+
+    mutation.mutate(newCollection);
+    setSearchTerm("");
   };
 
   // Handle loading state
@@ -107,9 +140,9 @@ function Collections() {
           <ArrowLeft className="size-4" aria-hidden="true" />
           Home
         </Link>
-        <Button variant="outline" className="" size="sm">
+        {/* <Button variant="outline" className="" size="sm">
           + New collection
-        </Button>
+        </Button> */}
       </div>
       <Input
         value={searchTerm}
@@ -121,8 +154,47 @@ function Collections() {
         + Create new collection
       </Button>
       <Separator className="w-full" /> */}
-      <div className="flex-1 pt-0">
+      <div
+        className={cn(
+          "flex-1 pt-0 overflow-y-auto max-h-full",
+          "[&::-webkit-scrollbar]:w-1.5",
+          "[&::-webkit-scrollbar-track]:bg-background [&::-webkit-scrollbar-track]:rounded-full",
+          "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/25 hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/50"
+        )}
+      >
         <div className="flex flex-col space-y-2">
+          <div className="flex items-center gap-2">
+            {/* <Hash className="size-3 text-muted-foreground" aria-hidden="true" /> */}
+            <p className="text-sm text-muted-foreground">
+              Select from exising collections
+            </p>
+          </div>
+
+          {filteredCollections.length === 0 && searchTerm.trim() !== "" && (
+            <div className="flex flex-col items-center justify-center gap-1 bg-background/50 p-4 rounded-md border border-dashed border-border">
+              <p className="text-sm text-muted-foreground text-center">
+                No results found.
+              </p>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-fit mt-2"
+                onClick={handleCreateCollection}
+              >
+                Create collection "{searchTerm}"
+              </Button>
+            </div>
+          )}
+
+          {filteredCollections.length === 0 && searchTerm.trim() === "" && (
+            <div className="grid gap-0 bg-background/50 p-4 rounded-md border border-dashed border-border">
+              <p className="text-sm text-muted-foreground text-center">
+                No collections found. Try adjusting your search or create new
+                collections.
+              </p>
+            </div>
+          )}
+
           <RadioGroup
             className="gap-1"
             value={collection.slug}
@@ -143,7 +215,7 @@ function Collections() {
                 className="order-1 after:absolute after:inset-0"
               />
             </div> */}
-            {filteredCollections.length > 0 ? (
+            {filteredCollections.length > 0 &&
               filteredCollections.map(collection => (
                 <div
                   key={collection.id}
@@ -152,9 +224,6 @@ function Collections() {
                   <div className="grid grow gap-2 px-3 py-2">
                     <Label htmlFor={collection.slug} className="">
                       {collection.name}
-                      {/* <span className="text-xs font-normal leading-[inherit] text-muted-foreground">
-                    (X items)
-                    </span> */}
                     </Label>
                     {collection.description && (
                       <p
@@ -173,12 +242,7 @@ function Collections() {
                     indicatorIconClassName="fill-background"
                   />
                 </div>
-              ))
-            ) : (
-              <p className="text-sm text-muted-foreground px-3 py-2 text-center">
-                No collections found.
-              </p>
-            )}
+              ))}
           </RadioGroup>
         </div>
       </div>

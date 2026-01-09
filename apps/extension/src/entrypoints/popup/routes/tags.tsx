@@ -48,19 +48,17 @@ function Tags() {
 
   const mutation = useMutation({
     mutationFn: createTag,
-    onSuccess: () => {
+    onSuccess: data => {
+      console.log("Created tag:", data);
+
+      setTags([...tags, data.tag]);
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["tags"] });
     }
   });
 
-  console.log("Fetched tags data:", data);
-  console.log("Tags from store:", tags);
-  console.log("Filtered tags:", filteredTags);
-
   useEffect(() => {
     if (data) {
-      // setTags(data.tags);
       setFilteredTags(data.tags);
     }
   }, [data]);
@@ -73,7 +71,7 @@ function Tags() {
     if (data) {
       if (searchTerm.trim() !== "") {
         const filtered = data.tags.filter(tag =>
-          tag.name.toLowerCase().includes(searchTerm.toLowerCase())
+          tag.name.toLowerCase().startsWith(searchTerm.toLowerCase())
         );
         setFilteredTags(filtered);
       } else {

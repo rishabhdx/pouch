@@ -97,6 +97,7 @@ export default defineContentScript({
             message
           );
           const metadata = extractMetadataFromDocument(document);
+          console.log("Extracted metadata:", metadata);
 
           browser.runtime.sendMessage({
             ...message,

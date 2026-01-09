@@ -26,13 +26,22 @@ export const createTag = async (req: Request, res: Response) => {
   }
 
   try {
-    await db.insert(tags).values({
-      name: name,
-      userId: req.user!.id,
-      slug: slugify(name, { lower: true, strict: true })
-    });
+    const newTag = await db
+      .insert(tags)
+      .values({
+        name: name,
+        userId: req.user!.id,
+        slug: slugify(name, { lower: true, strict: true })
+      })
+      .returning({
+        name: tags.name,
+        id: tags.id,
+        slug: tags.slug
+      });
 
-    res.status(201).json({ message: "New tag created successfully" });
+    res
+      .status(201)
+      .json({ message: "New tag created successfully", tag: newTag[0] });
   } catch (error) {
     console.error("Error creating tags:", error);
     res.status(500).json({ error: "Failed to create tags" });
