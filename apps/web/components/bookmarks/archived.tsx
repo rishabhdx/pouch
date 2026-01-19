@@ -1,5 +1,5 @@
 import { db } from "@pouch/db";
-import { BookmarkWithCollection } from "@pouch/db/schema";
+import { BookmarkWithCollectionAndTags } from "@pouch/db/schema";
 import { BookmarksView } from "@/components/bookmarks/main-view";
 import { MainView } from "@/components/bookmarks-new/main-view";
 
@@ -8,7 +8,7 @@ interface ArchivedBookmarksProps {
 }
 
 export async function ArchivedBookmarks({ userId }: ArchivedBookmarksProps) {
-  const archivedBookmarks: BookmarkWithCollection[] =
+  const archivedBookmarks: BookmarkWithCollectionAndTags[] =
     await db.query.bookmarks.findMany({
       where: (bookmark, { and, eq }) =>
         and(eq(bookmark.userId, userId), eq(bookmark.isArchived, true)),

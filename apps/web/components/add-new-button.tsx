@@ -13,7 +13,7 @@ export function AddNewButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="secondary">
+        <Button variant="outline">
           <HugeiconsIcon
             icon={BookmarkAdd02Icon}
             color="currentColor"

@@ -36,7 +36,7 @@ export function GroupItem({ label, icon, href, count = 0 }: GroupItemProps) {
           {label}
         </Link>
       </SidebarMenuButton>
-      <SidebarMenuBadge className="font-mono text-muted-foreground">
+      <SidebarMenuBadge className="font-mono text-muted-foreground font-medium bg-input/50">
         {count}
       </SidebarMenuBadge>
     </SidebarMenuItem>

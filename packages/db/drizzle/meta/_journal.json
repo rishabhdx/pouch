@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1759169035476,
-      "tag": "0000_gifted_sprite",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1760207550761,
-      "tag": "0001_sloppy_wallow",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1763230894538,
-      "tag": "0002_medical_dreaming_celestial",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1767987702660,
-      "tag": "0003_cuddly_starbolt",
+      "when": 1768199045799,
+      "tag": "0000_lonely_scrambler",
       "breakpoints": true
     }
   ]

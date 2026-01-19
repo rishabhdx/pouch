@@ -1,6 +1,12 @@
 import type { Request, Response } from "express";
 import { db } from "@pouch/db";
-import { bookmarks, bookmarksToTags } from "@pouch/db/schema";
+import {
+  bookmarks,
+  bookmarksToTags,
+  collections,
+  tags
+} from "@pouch/db/schema";
+import { sql, eq, inArray } from "@pouch/db/utils";
 
 interface CreateBookmarkBody {
   title: string;
@@ -64,12 +70,37 @@ export const createBookmark = async (req: Request, res: Response) => {
 
       if (!b) return;
 
-      await db.insert(bookmarksToTags).values(
-        body.tags.map(tag => ({
-          bookmarkId: b.id,
-          tagId: tag.id
-        }))
-      );
+      await Promise.allSettled([
+        db.insert(bookmarksToTags).values(
+          body.tags.map(tag => ({
+            bookmarkId: b.id,
+            tagId: tag.id
+          }))
+        ),
+
+        db
+          .update(tags)
+          .set({
+            bookmarkCount: sql`${tags.bookmarkCount} + 1`
+          })
+          .where(
+            inArray(
+              tags.id,
+              body.tags.map(t => t.id)
+            )
+          )
+      ]);
+    }
+
+    if (body.collectionId && body.collectionId !== "all") {
+      const c = body.collectionId;
+
+      await db
+        .update(collections)
+        .set({
+          bookmarkCount: sql`${collections.bookmarkCount} + 1`
+        })
+        .where(eq(collections.id, c));
     }
 
     res.status(201).json({

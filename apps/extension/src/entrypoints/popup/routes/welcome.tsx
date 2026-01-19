@@ -21,12 +21,34 @@ function RouteComponent() {
       currentWindow: true
     });
 
+    console.log("Active tab:", tab);
+
     if (!tab.id) return;
 
-    await browser.tabs.sendMessage(tab.id, {
-      type: ACTIONS.INITIATE_SIGNIN_FROM_WELCOME
-    });
-    console.log("Sign-in initiated from welcome page");
+    // Check if we can inject content scripts on this tab
+    const url = tab.url || "";
+    if (
+      url.startsWith("chrome://") ||
+      url.startsWith("chrome-extension://") ||
+      url.startsWith("about:") ||
+      url.startsWith("edge://") ||
+      url.startsWith("moz-extension://")
+    ) {
+      // Open sign-in in a new tab instead
+      await browser.tabs.create({
+        url: `${import.meta.env.WXT_WEBSITE_URL}/auth/sign-in`
+      });
+      return;
+    }
+
+    try {
+      await browser.tabs.sendMessage(tab.id, {
+        type: ACTIONS.INITIATE_SIGNIN_FROM_WELCOME
+      });
+      console.log("Sign-in initiated from welcome page");
+    } catch (error) {
+      console.error("Error initiating sign-in from welcome page:", error);
+    }
   };
 
   return (

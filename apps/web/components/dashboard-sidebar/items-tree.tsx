@@ -12,9 +12,7 @@ import {
 } from "@pouch/ui/components/sidebar";
 
 type ItemTreeProps = {
-  item: Pick<Collection, "name" | "slug" | "id" | "description"> & {
-    bookmarksCount: number;
-  };
+  item: Pick<Collection, "name" | "slug" | "id" | "bookmarkCount">;
 };
 
 export function ItemsTree({ item }: ItemTreeProps) {
@@ -70,8 +68,8 @@ export function ItemsTree({ item }: ItemTreeProps) {
           {item.name}
         </Link>
       </SidebarMenuButton>
-      <SidebarMenuBadge className="font-mono text-muted-foreground">
-        {item.bookmarksCount}
+      <SidebarMenuBadge className="font-mono text-muted-foreground font-medium bg-input/50">
+        {item.bookmarkCount}
       </SidebarMenuBadge>
     </SidebarMenuItem>
   );

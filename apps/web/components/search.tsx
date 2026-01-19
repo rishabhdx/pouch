@@ -35,6 +35,38 @@ export function SearchBox() {
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Recent searches">
+            <CommandItem>
+              <FolderPlus
+                size={16}
+                strokeWidth={2}
+                className="opacity-60"
+                aria-hidden="true"
+              />
+              <span>react</span>
+              <CommandShortcut className="justify-center">⌘N</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              <FileInput
+                size={16}
+                strokeWidth={2}
+                className="opacity-60"
+                aria-hidden="true"
+              />
+              <span>next</span>
+              <CommandShortcut className="justify-center">⌘I</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              <CircleFadingPlus
+                size={16}
+                strokeWidth={2}
+                className="opacity-60"
+                aria-hidden="true"
+              />
+              <span>vercel</span>
+              <CommandShortcut className="justify-center">⌘B</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
           <CommandGroup heading="Quick start">
             <CommandItem>
               <FolderPlus

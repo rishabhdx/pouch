@@ -13,11 +13,9 @@ import {
   SidebarMenuItem
 } from "@pouch/ui/components/sidebar";
 import { UserDropdown } from "@/components/user-dropdown";
-
-import { FolderOpen } from "lucide-react";
-import { StaticSidebarGroup } from "./static-group";
-import { DynamicSidebarGroup } from "./dynamic-group";
-import { SidebarGroupsLoadingState } from "../loading-states/sidebar-groups";
+import { StaticSidebarGroup } from "@/components/dashboard-sidebar/static-group";
+import { DynamicSidebarGroup } from "@/components/dashboard-sidebar/dynamic-group";
+import { SidebarGroupsLoadingState } from "@/components/loading-states/sidebar-groups";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Folder01FreeIcons } from "@hugeicons/core-free-icons";
 
@@ -49,12 +47,10 @@ export async function DashboardSidebar({
         <SidebarGroup>
           <SidebarGroupLabel className="hover:underline gap-2" asChild>
             <Link href="/dashboard/collections">
-              {/* <FolderOpen className="size-3 shrink-0 text-muted-foreground" /> */}
               <HugeiconsIcon
                 icon={Folder01FreeIcons}
                 color="currentColor"
-                // size={12}
-                // className="size-3"
+                className="size-3"
                 aria-hidden="true"
               />
               Collections
@@ -64,6 +60,22 @@ export async function DashboardSidebar({
             <DynamicSidebarGroup />
           </Suspense>
         </SidebarGroup>
+        {/* <SidebarGroup>
+          <SidebarGroupLabel className="hover:underline gap-2" asChild>
+            <Link href="/dashboard/tags">
+              <HugeiconsIcon
+                icon={TagsIcon}
+                color="currentColor"
+                className="size-3"
+                aria-hidden="true"
+              />
+              Tags
+            </Link>
+          </SidebarGroupLabel>
+          <Suspense fallback={<SidebarGroupsLoadingState />}>
+            <DynamicSidebarGroup />
+          </Suspense>
+        </SidebarGroup> */}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

@@ -8,7 +8,6 @@ import {
   varchar,
   integer,
   decimal,
-  jsonb,
   primaryKey,
   index,
   unique
@@ -87,6 +86,7 @@ export const collections = pgTable(
     name: varchar("name", { length: 256 }).notNull(),
     slug: varchar("slug", { length: 256 }).notNull(),
     description: text("description"),
+    bookmarkCount: integer("bookmark_count").default(0).notNull(),
 
     // Timestamps
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -205,6 +205,7 @@ export const tags = pgTable(
 
     name: varchar("name", { length: 256 }).notNull(),
     slug: varchar("slug", { length: 256 }).notNull(),
+    bookmarkCount: integer("bookmark_count").default(0).notNull(),
 
     // Timestamps
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -278,6 +279,13 @@ export type NewBookmarkTag = typeof bookmarksToTags.$inferInsert;
 // export type NewImportJob = typeof importJobs.$inferInsert;
 
 export type BookmarkWithCollection = typeof bookmarks.$inferSelect & {
+  collection: typeof collections.$inferSelect | null;
+  bookmarksToTags: (typeof bookmarksToTags.$inferSelect & {
+    tag: typeof tags.$inferSelect;
+  })[];
+};
+
+export type BookmarkWithCollectionAndTags = typeof bookmarks.$inferSelect & {
   collection: typeof collections.$inferSelect | null;
   bookmarksToTags: (typeof bookmarksToTags.$inferSelect & {
     tag: typeof tags.$inferSelect;

@@ -19,30 +19,31 @@ CREATE TABLE "bookmark" (
 	"user_id" text NOT NULL,
 	"collection_id" uuid,
 	"url" text NOT NULL,
-	"name" text NOT NULL,
-	"description" text,
+	"title" text NOT NULL,
 	"is_archived" boolean DEFAULT false NOT NULL,
 	"is_favorite" boolean DEFAULT false NOT NULL,
 	"reading_progress" numeric(5, 4) DEFAULT '0',
 	"read_at" timestamp with time zone,
 	"domain" text,
-	"title" text,
-	"canonical_url" text,
-	"site_name" varchar(256),
-	"author" varchar(256),
-	"published_at" timestamp with time zone,
-	"image_url" text,
-	"locale" varchar(64),
-	"type" varchar(64),
-	"excerpt" text,
+	"document_title" text,
+	"document_description" text,
+	"og_title" text,
+	"og_description" text,
+	"og_image" text,
+	"og_url" text,
+	"og_type" text,
+	"twitter_title" text,
+	"twitter_description" text,
+	"twitter_image" text,
+	"twitter_card" text,
+	"favicon_url" text,
 	"content" text,
 	"content_html" text,
 	"word_count" integer,
 	"reading_time_minutes" integer,
-	"featured_image_url" text,
-	"images" jsonb DEFAULT '[]'::jsonb,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "uq_bookmarks_userId_url" UNIQUE("user_id","url")
 );
 --> statement-breakpoint
 CREATE TABLE "bookmarks_to_tags" (
@@ -58,6 +59,7 @@ CREATE TABLE "collection" (
 	"name" varchar(256) NOT NULL,
 	"slug" varchar(256) NOT NULL,
 	"description" text,
+	"bookmark_count" integer DEFAULT 0 NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "uq_collections_userId_slug" UNIQUE("user_id","slug")
@@ -79,9 +81,11 @@ CREATE TABLE "tag" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" text NOT NULL,
 	"name" varchar(256) NOT NULL,
-	"description" text,
+	"slug" varchar(256) NOT NULL,
+	"bookmark_count" integer DEFAULT 0 NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "uq_tags_userId_slug" UNIQUE("user_id","slug")
 );
 --> statement-breakpoint
 CREATE TABLE "user" (

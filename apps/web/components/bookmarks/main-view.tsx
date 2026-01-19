@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   ColumnDef,
@@ -11,23 +11,16 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
-  FilterFn,
-  Row
+  type FilterFn,
+  type Row
 } from "@tanstack/react-table";
 
 import { BookmarksDataListView } from "@/components/bookmarks/data-list-view";
-import { BookmarksDataGridView } from "@/components/bookmarks/data-grid-view";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
-} from "@pouch/ui/components/tabs";
 import { BookmarksEmptyState } from "@/components/empty-states/bookmarks";
-import { type BookmarkWithCollection } from "@pouch/db/schema";
+import { type BookmarkWithCollectionAndTags } from "@pouch/db/schema";
 
-const collectionsFilterFunction: FilterFn<BookmarkWithCollection> = (
-  row: Row<BookmarkWithCollection>,
+const collectionsFilterFunction: FilterFn<BookmarkWithCollectionAndTags> = (
+  row: Row<BookmarkWithCollectionAndTags>,
   columnId: string,
   filterValue: string[],
   addMeta: (meta: any) => void
@@ -41,8 +34,8 @@ const collectionsFilterFunction: FilterFn<BookmarkWithCollection> = (
   return filterValue.includes(collectionSlug);
 };
 
-const tagsFilterFunction: FilterFn<BookmarkWithCollection> = (
-  row: Row<BookmarkWithCollection>,
+const tagsFilterFunction: FilterFn<BookmarkWithCollectionAndTags> = (
+  row: Row<BookmarkWithCollectionAndTags>,
   columnId: string,
   filterValue: string[],
   addMeta: (meta: any) => void
@@ -62,7 +55,7 @@ const tagsFilterFunction: FilterFn<BookmarkWithCollection> = (
   return filterValue.some(value => tagSlugs.includes(value));
 };
 
-export const columns: ColumnDef<BookmarkWithCollection>[] = [
+export const columns: ColumnDef<BookmarkWithCollectionAndTags>[] = [
   {
     accessorKey: "tags",
     accessorFn: row => row.bookmarksToTags.map(btt => btt.tag.slug),
@@ -173,7 +166,7 @@ export const columns: ColumnDef<BookmarkWithCollection>[] = [
 ];
 
 interface BookmarksViewProps {
-  data: BookmarkWithCollection[];
+  data: BookmarkWithCollectionAndTags[];
   preappliedFilters?: {
     favorite?: boolean;
     archived?: boolean;
@@ -290,12 +283,17 @@ export function BookmarksView({ data }: BookmarksViewProps) {
     // onColumnVisibilityChange: setColumnVisibility,
     // onPaginationChange: setPagination,
     // state: tableState,
+    initialState: {
+      pagination: {
+        pageSize: 10,
+        pageIndex: 0
+      }
+    },
     state: {
       sorting,
       columnFilters,
-      globalFilter,
-      // columnVisibility,
-      pagination
+      globalFilter
+      // columnVisibility
     }
   });
 
@@ -374,29 +372,10 @@ export function BookmarksView({ data }: BookmarksViewProps) {
   // console.log(table.getState().sorting); // access the sorting state from the table instance
 
   return (
-    <div className="w-full h-full overflow-hidden flex flex-col">
-      {/* // ? can remove flex flex-col if pagination is taken elsewhere */}
-      <section className="h-full flex-1 overflow-y-auto pr-4">
+    <div className="w-full h-full overflow-hidden pt-2 pb-4">
+      <section className="h-full overflow-y-auto pr-4">
         <BookmarksDataListView table={table} />
       </section>
-      {/* <div className="flex items-center justify-center space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div> */}
     </div>
   );
 

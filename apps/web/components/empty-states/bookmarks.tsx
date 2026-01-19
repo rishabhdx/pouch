@@ -1,4 +1,4 @@
-import { ArrowUpRightIcon, FolderX } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@pouch/ui/components/button";
 import {
@@ -9,7 +9,9 @@ import {
   EmptyMedia,
   EmptyTitle
 } from "@pouch/ui/components/empty";
-import Link from "next/link";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
+
+import { ArrowUpRightIcon, FolderX } from "lucide-react";
 
 const DEFAULT_VALUES = {
   title: "No bookmarks found",
@@ -24,6 +26,7 @@ type BookmarksEmptyStateProps = {
   description?: string;
   ctaText?: string;
   ctaLink?: string;
+  icon?: IconSvgElement;
 };
 
 export function BookmarksEmptyState({

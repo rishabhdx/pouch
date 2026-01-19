@@ -1,6 +1,5 @@
 import { db } from "@pouch/db";
-import { BookmarkWithCollection } from "@pouch/db/schema";
-import { BookmarksView } from "@/components/bookmarks/main-view";
+import { type BookmarkWithCollectionAndTags } from "@pouch/db/schema";
 import { MainView } from "@/components/bookmarks-new/main-view";
 
 interface FavoriteBookmarksProps {
@@ -8,7 +7,7 @@ interface FavoriteBookmarksProps {
 }
 
 export async function FavoriteBookmarks({ userId }: FavoriteBookmarksProps) {
-  const favoriteBookmarks: BookmarkWithCollection[] =
+  const favoriteBookmarks: BookmarkWithCollectionAndTags[] =
     await db.query.bookmarks.findMany({
       where: (bookmark, { and, eq }) =>
         and(eq(bookmark.userId, userId), eq(bookmark.isFavorite, true)),

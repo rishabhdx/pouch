@@ -18,18 +18,12 @@ export async function DynamicSidebarGroup() {
     return <div>Please log in to see your bookmarks.</div>;
   }
 
-  // Couldn't get this to work cleanly with .$count
-  // https://github.com/drizzle-team/drizzle-orm/issues/3493
   const allCollectionsWithBookmarkCount = await db
     .select({
       id: collections.id,
       name: collections.name,
       slug: collections.slug,
-      description: collections.description,
-      bookmarksCount: db.$count(
-        bookmarks,
-        eq(bookmarks.collectionId, collections.id)
-      )
+      bookmarkCount: collections.bookmarkCount
     })
     .from(collections)
     .where(eq(collections.userId, session.user.id));

@@ -1,31 +1,31 @@
 "use client";
 
 import { type Table as TanstackTable } from "@tanstack/react-table";
-import { ColumnDef, flexRender } from "@tanstack/react-table";
 
-import { Button } from "@pouch/ui/components/button";
-import { type BookmarkWithCollection } from "@pouch/db/schema";
+import { type BookmarkWithCollectionAndTags } from "@pouch/db/schema";
 import { ListViewItem } from "@/components/bookmarks/data-list-view-item";
+import { DataTablePagination } from "@/components/bookmarks/pagination";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
+// interface DataTableProps<TData, TValue> {
+//   columns: ColumnDef<TData, TValue>[];
+//   data: TData[];
+// }
 
 export function BookmarksDataListView({
-  table,
+  table
 }: {
-  table: TanstackTable<BookmarkWithCollection>;
+  table: TanstackTable<BookmarkWithCollectionAndTags>;
 }) {
   return (
-    <div className="w-full h-full flex flex-col gap-6">
+    <div className="w-full h-full flex flex-col gap-4">
       {table.getRowModel().rows?.length ? (
-        table.getRowModel().rows.map((row) => {
+        table.getRowModel().rows.map(row => {
           return <ListViewItem key={row.id} row={row} />;
         })
       ) : (
         <div>No results</div>
       )}
+      <DataTablePagination table={table} />
     </div>
   );
 

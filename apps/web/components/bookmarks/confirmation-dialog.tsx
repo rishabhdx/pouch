@@ -21,6 +21,7 @@ type ConfirmationDialogProps = React.ComponentProps<"div"> & {
   cancelText: string;
   onConfirm?: () => void;
   onCancel?: () => void;
+  isPending?: boolean;
 };
 
 export function ConfirmationDialog({
@@ -32,7 +33,8 @@ export function ConfirmationDialog({
   confirmText,
   cancelText,
   onConfirm,
-  onCancel
+  onCancel,
+  isPending = false
 }: ConfirmationDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -47,9 +49,11 @@ export function ConfirmationDialog({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onCancel}>{cancelText}</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>
-            {confirmText}
+          <AlertDialogCancel onClick={onCancel} disabled={isPending}>
+            {cancelText}
+          </AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm} disabled={isPending}>
+            {isPending ? "Loading..." : confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

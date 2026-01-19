@@ -1,10 +1,9 @@
-import { count, eq, and, gt } from "drizzle-orm";
+import { count, eq, and, lt } from "drizzle-orm";
 import { subDays } from "date-fns";
 
 import { db } from "@pouch/db";
 import { bookmarks, tags, collections } from "@pouch/db/schema";
 import { Card } from "@pouch/ui/components/card";
-import { Bookmark, FolderOpen, Hash } from "lucide-react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   AllBookmarkIcon,
@@ -13,32 +12,58 @@ import {
 } from "@hugeicons/core-free-icons";
 
 export async function ActivitySummary({ userId }: { userId: string }) {
-  const bookmarksResult = await db
-    .select({ count: count() })
-    .from(bookmarks)
-    .where(
-      and(
-        eq(bookmarks.userId, userId),
-        gt(bookmarks.createdAt, subDays(new Date(), 7))
+  const [bookmarksResult, collectionsResult, tagsResult] = await Promise.all([
+    db
+      .select({ count: count() })
+      .from(bookmarks)
+      .where(
+        and(
+          eq(bookmarks.userId, userId),
+          lt(bookmarks.createdAt, subDays(new Date(), 7))
+        )
+      ),
+    db
+      .select({ count: count() })
+      .from(collections)
+      .where(
+        and(
+          eq(collections.userId, userId),
+          lt(collections.createdAt, subDays(new Date(), 7))
+        )
+      ),
+    db
+      .select({ count: count() })
+      .from(tags)
+      .where(
+        and(eq(tags.userId, userId), lt(tags.createdAt, subDays(new Date(), 7)))
       )
-    );
+  ]);
+  // const bookmarksResult = await db
+  //   .select({ count: count() })
+  //   .from(bookmarks)
+  //   .where(
+  //     and(
+  //       eq(bookmarks.userId, userId),
+  //       lt(bookmarks.createdAt, subDays(new Date(), 7))
+  //     )
+  //   );
 
-  const collectionsResult = await db
-    .select({ count: count() })
-    .from(collections)
-    .where(
-      and(
-        eq(collections.userId, userId),
-        gt(collections.createdAt, subDays(new Date(), 7))
-      )
-    );
+  // const collectionsResult = await db
+  //   .select({ count: count() })
+  //   .from(collections)
+  //   .where(
+  //     and(
+  //       eq(collections.userId, userId),
+  //       lt(collections.createdAt, subDays(new Date(), 7))
+  //     )
+  //   );
 
-  const tagsResult = await db
-    .select({ count: count() })
-    .from(tags)
-    .where(
-      and(eq(tags.userId, userId), gt(tags.createdAt, subDays(new Date(), 7)))
-    );
+  // const tagsResult = await db
+  //   .select({ count: count() })
+  //   .from(tags)
+  //   .where(
+  //     and(eq(tags.userId, userId), lt(tags.createdAt, subDays(new Date(), 7)))
+  //   );
 
   const numberOfBookmarks = bookmarksResult[0]?.count || 0;
   const numberOfCollections = collectionsResult[0]?.count || 0;

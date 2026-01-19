@@ -1,10 +1,10 @@
 // import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { type BookmarkWithCollection } from "@pouch/db/schema";
+import { type BookmarkWithCollectionAndTags } from "@pouch/db/schema";
 import { ListViewItem } from "@/components/bookmarks-new/list-view-item";
 
 type MainViewProps = {
-  data: BookmarkWithCollection[];
+  data: BookmarkWithCollectionAndTags[];
 };
 
 export function MainView({ data }: MainViewProps) {

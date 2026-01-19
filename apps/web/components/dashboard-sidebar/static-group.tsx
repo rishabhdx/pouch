@@ -21,18 +21,37 @@ export async function StaticSidebarGroup() {
     return <div>Please log in to see your bookmarks.</div>;
   }
 
-  const allBookmarksCount = await db.$count(
-    bookmarks,
-    eq(bookmarks.userId, session.user.id)
-  );
-  const favoritesCount = await db.$count(
-    bookmarks,
-    and(eq(bookmarks.userId, session.user.id), eq(bookmarks.isFavorite, true))
-  );
-  const archivedCount = await db.$count(
-    bookmarks,
-    and(eq(bookmarks.userId, session.user.id), eq(bookmarks.isArchived, true))
-  );
+  const [allBookmarksResult, favoriteBookmarksResult, archivedBookmarksResult] =
+    await Promise.allSettled([
+      db.$count(bookmarks, eq(bookmarks.userId, session.user.id)),
+      db.$count(
+        bookmarks,
+        and(
+          eq(bookmarks.userId, session.user.id),
+          eq(bookmarks.isFavorite, true)
+        )
+      ),
+      db.$count(
+        bookmarks,
+        and(
+          eq(bookmarks.userId, session.user.id),
+          eq(bookmarks.isArchived, true)
+        )
+      )
+    ]);
+
+  const results = {
+    all:
+      allBookmarksResult.status === "fulfilled" ? allBookmarksResult.value : 0,
+    favorite:
+      favoriteBookmarksResult.status === "fulfilled"
+        ? favoriteBookmarksResult.value
+        : 0,
+    archived:
+      archivedBookmarksResult.status === "fulfilled"
+        ? archivedBookmarksResult.value
+        : 0
+  };
 
   return (
     <SidebarGroupContent>
@@ -40,20 +59,20 @@ export async function StaticSidebarGroup() {
         <GroupItem
           label="All"
           href="/dashboard/all"
-          count={allBookmarksCount}
+          count={results.all}
           icon={AllBookmarkIcon}
         />
         <GroupItem
           label="Favorite"
           icon={FavouriteIcon}
           href="/dashboard/favorite"
-          count={favoritesCount}
+          count={results.favorite}
         />
         <GroupItem
           label="Archived"
           icon={Archive03Icon}
           href="/dashboard/archived"
-          count={archivedCount}
+          count={results.archived}
         />
       </SidebarMenu>
     </SidebarGroupContent>

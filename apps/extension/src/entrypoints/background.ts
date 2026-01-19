@@ -19,13 +19,18 @@ export default defineBackground(() => {
   });
 
   browser.runtime.onMessage.addListener(async props => {
+    console.log("props", props);
     console.log("Message received in background script:", props);
 
     if (props.type === ACTIONS.INITIATE_SIGNIN_FROM_WELCOME) {
-      await browser.tabs.create({
-        url: `${import.meta.env.WXT_WEBSITE_URL}/auth/sign-in`
-      });
-      return;
+      try {
+        await browser.tabs.create({
+          url: `${import.meta.env.WXT_WEBSITE_URL}/auth/sign-in`
+        });
+        return;
+      } catch (error) {
+        console.error("Error opening sign-in page:", error);
+      }
     }
 
     if (props.type === ACTIONS.SAVE_BOOKMARK) {
@@ -61,7 +66,7 @@ export default defineBackground(() => {
   });
 
   browser.runtime.onStartup.addListener(async () => {
-    checkAuthSession("Checking auth session on startup...");
+    await checkAuthSession("Checking auth session on startup...");
   });
 
   browser.runtime.onInstalled.addListener(async () => {

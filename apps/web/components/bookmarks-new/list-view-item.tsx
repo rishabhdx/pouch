@@ -5,8 +5,11 @@ import { formatDistance, subDays } from "date-fns";
 import { enIN } from "date-fns/locale";
 
 import PlaceholderImage from "@/public/placeholder.svg";
-import { type BookmarkWithCollection } from "@pouch/db/schema";
-import { TagBadge } from "@pouch/ui/components/web/tag-badge";
+import {
+  type BookmarkWithCollection,
+  type Bookmark,
+  type BookmarkWithCollectionAndTags
+} from "@pouch/db/schema";
 import { Badge } from "@pouch/ui/components/badge";
 import { Button } from "@pouch/ui/components/button";
 import { ButtonGroup } from "@pouch/ui/components/button-group";
@@ -22,8 +25,6 @@ import { ConfirmationDialog } from "@/components/bookmarks/confirmation-dialog";
 
 import {
   Archive,
-  Dot,
-  Folder,
   FolderSymlink,
   Heart,
   MailCheck,
@@ -31,9 +32,11 @@ import {
   Tags,
   Trash2
 } from "lucide-react";
+import { Globe02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 
 type ListViewItemProps = {
-  item: BookmarkWithCollection;
+  item: Bookmark | BookmarkWithCollection | BookmarkWithCollectionAndTags;
   hideActions?: boolean;
 };
 
@@ -45,15 +48,15 @@ export function ListViewItem({ item, hideActions = false }: ListViewItemProps) {
     title,
     url,
     ogImage,
-    bookmarksToTags,
     documentDescription,
-    collection,
-    createdAt
+    createdAt,
+    faviconUrl,
+    domain
   } = item;
 
   return (
     <div className="w-full flex gap-4">
-      <div className="aspect-video relative max-w-64 w-full h-36 shrink-0">
+      <div className="aspect-video relative w-48 h-27 shrink-0">
         <img
           src={ogImage || PlaceholderImage.src}
           alt={title}
@@ -64,35 +67,118 @@ export function ListViewItem({ item, hideActions = false }: ListViewItemProps) {
       </div>
 
       <div className="w-full flex flex-col gap-2">
-        {bookmarksToTags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-1">
-            {bookmarksToTags.map(({ tag }) => (
-              <TagBadge key={tag.id} className="rounded-full font-semibold">
-                {tag.name}
-              </TagBadge>
-            ))}
-          </div>
-        )}
         <div className="flex justify-between items-baseline gap-1">
           <a
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-xl hover:underline line-clamp-2 cursor-pointer"
+            className="font-semibold hover:underline line-clamp-1 cursor-pointer"
             title={title}
           >
             {title}
           </a>
         </div>
-        <p className="text-sm text-muted-foreground line-clamp-2">
+        <p className="text-sm text-muted-foreground line-clamp-1">
           {documentDescription}
         </p>
+        {/* {bookmarksToTags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-1">
+            {bookmarksToTags.map(({ tag }) => (
+              // <TagBadge key={tag.id} className="rounded-full font-semibold">
+              //   {tag.name}
+              // </TagBadge>
+              <span
+                key={tag.id}
+                className={cn(
+                  "inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium",
+                  "bg-cyan-500/10 text-cyan-500"
+                )}
+              >
+                {tag.name}
+              </span>
+            ))}
+          </div>
+        )} */}
 
-        <div className="flex-1"></div>
+        {/* {bookmarksToTags.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {bookmarksToTags.slice(0, 2).map(({ tag }) => (
+              // <TagBadge key={tag.id} className="rounded-full font-semibold">
+              //   {tag.name}
+              // </TagBadge>
+              <span
+                key={tag.id}
+                className={cn(
+                  "inline-flex items-center px-1.5 py-0.5 rounded text-[12px] font-medium",
+                  "bg-cyan-500/10 text-cyan-500"
+                )}
+              >
+                {tag.name}
+              </span>
+            ))}
+            {bookmarksToTags.length > 2 && (
+              <span
+                className={cn(
+                  "inline-flex items-center px-1.5 py-0.5 rounded text-[12px] font-medium font-mono",
+                  "bg-cyan-500/10 text-cyan-500"
+                )}
+              >
+                +{bookmarksToTags.length - 2}
+              </span>
+            )}
+          </div>
+        )} */}
+
+        {/* <div className="flex-1"></div> */}
 
         <div className="mt-auto w-full flex justify-between items-center">
           <div className="flex items-center gap-2">
-            {collection && (
+            <Badge variant="outline" className="text-muted-foreground">
+              {faviconUrl ? (
+                <img
+                  src={faviconUrl}
+                  alt={domain || "favicon"}
+                  className="size-3 mr-1 rounded-sm"
+                  aria-hidden="true"
+                />
+              ) : (
+                <HugeiconsIcon
+                  icon={Globe02Icon}
+                  // className="size-4 mr-1"
+                  aria-hidden="true"
+                />
+              )}
+              {domain}
+            </Badge>
+            {/* {bookmarksToTags.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {bookmarksToTags.slice(0, 2).map(({ tag }) => (
+                  // <TagBadge key={tag.id} className="rounded-full font-semibold">
+                  //   {tag.name}
+                  // </TagBadge>
+                  <span
+                    key={tag.id}
+                    className={cn(
+                      "inline-flex items-center px-1.5 py-0.5 rounded text-[12px] font-medium",
+                      "bg-cyan-500/10 text-cyan-500"
+                    )}
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+                {bookmarksToTags.length > 2 && (
+                  <span
+                    className={cn(
+                      "inline-flex items-center px-1.5 py-0.5 rounded text-[12px] font-medium font-mono",
+                      "bg-cyan-500/10 text-cyan-500"
+                    )}
+                  >
+                    +{bookmarksToTags.length - 2}
+                  </span>
+                )}
+              </div>
+            )} */}
+            {/* {collection && (
               <>
                 <Badge variant="secondary" className="rounded-full">
                   <Folder className="size-4 mr-1" aria-hidden="true" />
@@ -103,7 +189,7 @@ export function ListViewItem({ item, hideActions = false }: ListViewItemProps) {
                   aria-hidden="true"
                 />
               </>
-            )}
+            )} */}
             <time
               dateTime={new Date(createdAt).toISOString()}
               className="text-xs text-muted-foreground"
